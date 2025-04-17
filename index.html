@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyGov Response Hub - Nepal</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <h1>MyGov Response Hub</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#collections">API Collections</a></li>
+                <li><a href="#flows">Flows</a></li>
+                <li><a href="#interactive">Interactive</a></li>
+                <li><a href="#documentation">Documentation</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>MyGov Response Hub</h1>
+                <h2>Unifying Nepal's Government Services</h2>
+                <div class="hero-buttons">
+                    <a href="#features" class="btn btn-primary">Explore Features</a>
+                    <a href="#documentation" class="btn btn-secondary">View Documentation</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="logo-placeholder">
+                    <img src="./assets/logo.png" alt="Logo" class="logo" width: 2px height: 2px/>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="overview" class="overview">
+        <div class="container">
+            <div class="section-header">
+                <h2>Project Overview</h2>
+                <div class="underline"></div>
+            </div>
+            <div class="overview-content">
+                <p>The MyGov Response Hub is a comprehensive Postman-based solution designed to integrate and streamline access to critical government services in Nepal. This project demonstrates how Postman can be leveraged to create a unified platform for accessing weather information, holiday calendars, transportation services, financial data, utility status, and emergency services.</p>
+                <p>By combining multiple APIs into a cohesive ecosystem with automated workflows, testing, and monitoring, the MyGov Response Hub showcases Postman's capabilities as a complete API development and integration platform.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Key Features</h2>
+                <div class="underline"></div>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <h3>Integrated API Collections</h3>
+                    <p>Organized collections for six essential service categories, providing a unified interface for accessing diverse government services.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-vial"></i>
+                    </div>
+                    <h3>Comprehensive Testing</h3>
+                    <p>Thorough validation for all API endpoints ensures reliability and data integrity across all services.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>Automated Workflows</h3>
+                    <p>Three sophisticated Postman Flows for real-world scenarios that combine multiple services for practical applications.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3>Continuous Monitoring</h3>
+                    <p>Health checks for all critical services to ensure availability and performance of essential government APIs.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <h3>Mock Servers</h3>
+                    <p>Fallback data sources when primary APIs are unavailable, ensuring consistent service delivery even during outages.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <h3>Nepal-Specific Focus</h3>
+                    <p>Prioritizing local APIs and services to address the unique needs of Nepali citizens and government agencies.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="collections" class="collections">
+        <div class="container">
+            <div class="section-header">
+                <h2>API Collections</h2>
+                <div class="underline"></div>
+            </div>
+            <div class="collections-grid">
+                <div class="collection-card">
+                    <div class="collection-icon">
+                        <i class="fas fa-cloud-sun"></i>
+                    </div>
+                    <h3>Weather Services</h3>
+                    <p>Integration with Nepal Weather API for location-based forecasts and weather alerts.</p>
+                    <a href="#" class="collection-link" data-collection="weather">View Details</a>
+                </div>
+                <div class="collection-card">
+                    <div class="collection-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>Calendar & Holiday Services</h3>
+                    <p>Nepal Events API integration providing holiday information in both AD and BS calendars.</p>
+                    <a href="#" class="collection-link" data-collection="holiday">View Details</a>
+                </div>
+                <div class="collection-card">
+                    <div class="collection-icon">
+                        <i class="fas fa-route"></i>
+                    </div>
+                    <h3>Transportation & Maps</h3>
+                    <p>Baato Maps API integration for route planning, navigation, and public transportation information.</p>
+                    <a href="#" class="collection-link" data-collection="transportation">View Details</a>
+                </div>
+                <div class="collection-card">
+                    <div class="collection-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <h3>Financial Services</h3>
+                    <p>Nepal Rastra Bank forex data and currency exchange rates with stock market information.</p>
+                    <a href="#" class="collection-link" data-collection="financial">View Details</a>
+                </div>
+                <div class="collection-card">
+                    <div class="collection-icon">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                    <h3>Utility Services</h3>
+                    <p>Electricity status, power outage information, water supply, and internet service provider status.</p>
+                    <a href="#" class="collection-link" data-collection="utility">View Details</a>
+                </div>
+                <div class="collection-card">
+                    <div class="collection-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>Emergency Services</h3>
+                    <p>Emergency alerts, safety guidelines, and emergency contact information for disaster response.</p>
+                    <a href="#" class="collection-link" data-collection="emergency">View Details</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="flows" class="flows">
+        <div class="container">
+            <div class="section-header">
+                <h2>Automated Flows</h2>
+                <div class="underline"></div>
+            </div>
+            <div class="flows-container">
+                <div class="flow-card">
+                    <h3>Weather Alert & Holiday Planning Flow</h3>
+                    <div class="flow-diagram">
+                        <div class="flow-step">Weather Data</div>
+                        <div class="flow-arrow"><i class="fas fa-arrow-right"></i></div>
+                        <div class="flow-step">Holiday Information</div>
+                        <div class="flow-arrow"><i class="fas fa-arrow-right"></i></div>
+                        <div class="flow-step">Power Outage Alerts</div>
+                        <div class="flow-arrow"><i class="fas fa-arrow-right"></i></div>
+                        <div class="flow-step">Integrated Report</div>
+                    </div>
+                    <p>This flow combines weather forecasts with holiday information and potential power outage alerts to provide a comprehensive daily planning tool. It helps users prepare for their day by considering weather conditions, holiday schedules, and potential utility disruptions.</p>
+                </div>
+                <div class="flow-card">
+                    <h3>Emergency Response Flow</h3>
+                    <div class="flow-diagram">
+                        <div class="flow-step">Emergency Alerts</div>
+                        <div class="flow-arrow"><i class="fas fa-arrow-right"></i></div>
+                        <div class="flow-step">Safety Guidelines</div>
+                        <div class="flow-arrow"><i class="fas fa-arrow-right"></i></div>
+                        <div class="flow-step">Weather Conditions</div>
+                        <div class="flow-arrow"><i class="fas fa-arrow-right"></i></div>
+                        <div class="flow-step">Evacuation Routes</div>
+                    </div>
+                    <p>This flow integrates emergency alerts with transportation routing and service status information to provide critical guidance during emergencies. It delivers personalized evacuation routes, safety instructions, and emergency contact information based on the user's location and the nature of the emergency.</p>
+                </div>
+                <div class="flow-card">
+                    <h3>Financial Planning Flow</h3>
+                    <div class="flow-diagram">
+                        <div class="flow-step">Currency Exchange</div>
+                        <div class="flow-arrow"><i class="fas fa-arrow-right"></i></div>
+                        <div class="flow-step">Stock Market Data</div>
+                        <div class="flow-arrow"><i class="fas fa-arrow-right"></i></div>
+                        <div class="flow-step">Utility Status</div>
+                        <div class="flow-arrow"><i class="fas fa-arrow-right"></i></div>
+                        <div class="flow-step">Financial Impact</div>
+                    </div>
+                    <p>This flow combines currency exchange rates with utility service information to help users make informed financial decisions. It provides insights into currency trends, stock market performance, and potential financial impacts of scheduled power outages.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive section will be inserted here by JavaScript -->
+
+    <section id="documentation" class="documentation">
+        <div class="container">
+            <div class="section-header">
+                <h2>Documentation</h2>
+                <div class="underline"></div>
+            </div>
+            <div class="documentation-grid">
+                <div class="doc-card">
+                    <div class="doc-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3>API Documentation</h3>
+                    <p>Comprehensive documentation for all API collections, including endpoints, parameters, and examples.</p>
+                    <a href="https://github.com/felixop7/mygov-response/blob/main/README.md" class="doc-link" id="api-docs-link">View API Docs</a>
+                </div>
+                <div class="doc-card">
+                    <div class="doc-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>Installation Guide</h3>
+                    <p>Step-by-step instructions for setting up the MyGov Response Hub in your Postman environment.</p>
+                    <a href="https://github.com/felixop7/mygov-response/blob/main/README.md" class="doc-link" id="installation-link">View Guide</a>
+                </div>
+                <div class="doc-card">
+                    <div class="doc-icon">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <h3>Flow Tutorials</h3>
+                    <p>Detailed tutorials on how to use and customize the automated flows for your specific needs.</p>
+                    <a href="https://docs.github.com/en/get-started/using-github/github-flow" class="doc-link" id="flow-tutorials-link">View Tutorials</a>
+                </div>
+                <div class="doc-card">
+                    <div class="doc-icon">
+                        <i class="fas fa-github"></i>
+                    </div>
+                    <h3>GitHub Repository</h3>
+                    <p>Access the complete source code, collections, and documentation on GitHub.</p>
+                    <a href="https://github.com/felixop7/mygov-response/" class="doc-link" id="github-link">View Repository</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="download" class="download">
+        <div class="container">
+            <div class="download-content">
+                <h2>Ready to Get Started?</h2>
+                <p>Download the complete MyGov Response Hub package and start exploring Nepal's government services through Postman.</p>
+                <a href="#" class="btn btn-primary" id="download-btn">
+                    <i class="fas fa-download"></i> Download Project
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <div id="collection-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="modal-content-container">
+                <!-- Modal content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>MyGov Response Hub</h2>
+                    <p>Unifying Nepal's Government Services</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#collections">API Collections</a></li>
+                        <li><a href="#flows">Flows</a></li>
+                        <li><a href="#interactive">Interactive</a></li>
+                        <li><a href="#documentation">Documentation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>Contact</h3>
+                    <p>Email: roshansahani226@gmail.com</p>
+                    <p>© 2025 Roshan Sahani. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
