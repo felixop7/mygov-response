@@ -1,0 +1,277 @@
+{
+  "info": {
+    "name": "Transportation & Emergency API Monitor",
+    "description": "Monitor for checking the health of transportation and emergency APIs in the MyGov Response Hub",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Monitor Baato Maps API",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Test for successful response",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Test for response time",
+              "pm.test(\"Response time is acceptable\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+              "});",
+              "",
+              "// Test for JSON content type",
+              "pm.test(\"Content-Type is JSON\", function () {",
+              "    pm.response.to.have.header(\"Content-Type\");",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "// Test for valid JSON response",
+              "pm.test(\"Response is valid JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an('object');",
+              "});",
+              "",
+              "// Test for data array in response",
+              "pm.test(\"Response contains data array\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('data');",
+              "    pm.expect(jsonData.data).to.be.an('array');",
+              "});",
+              "",
+              "// Send monitor results to a notification endpoint (mock)",
+              "if (pm.response.code !== 200) {",
+              "    pm.sendRequest({",
+              "        url: pm.variables.get(\"monitor_notification_url\"),",
+              "        method: 'POST',",
+              "        header: {",
+              "            'Content-Type': 'application/json'",
+              "        },",
+              "        body: {",
+              "            mode: 'raw',",
+              "            raw: JSON.stringify({",
+              "                monitor: 'Transportation & Emergency API Monitor',",
+              "                status: 'Failed',",
+              "                endpoint: 'Baato Maps API',",
+              "                error: 'API returned status code ' + pm.response.code,",
+              "                timestamp: new Date().toISOString()",
+              "            })",
+              "        }",
+              "    });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "https://api.baato.io/api/v1/search?key={{baato_api_key}}&q=Kathmandu&limit=5",
+          "protocol": "https",
+          "host": ["api", "baato", "io"],
+          "path": ["api", "v1", "search"],
+          "query": [
+            {
+              "key": "key",
+              "value": "{{baato_api_key}}"
+            },
+            {
+              "key": "q",
+              "value": "Kathmandu"
+            },
+            {
+              "key": "limit",
+              "value": "5"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Monitor Mock Transportation API (Fallback)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Test for successful response",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Test for JSON content type",
+              "pm.test(\"Content-Type is JSON\", function () {",
+              "    pm.response.to.have.header(\"Content-Type\");",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "// Test for valid JSON response",
+              "pm.test(\"Response is valid JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an('object');",
+              "});",
+              "",
+              "// Test for routes array in response",
+              "pm.test(\"Response contains routes array\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('routes');",
+              "    pm.expect(jsonData.routes).to.be.an('array');",
+              "});",
+              "",
+              "// Send monitor results to a notification endpoint (mock)",
+              "if (pm.response.code !== 200) {",
+              "    pm.sendRequest({",
+              "        url: pm.variables.get(\"monitor_notification_url\"),",
+              "        method: 'POST',",
+              "        header: {",
+              "            'Content-Type': 'application/json'",
+              "        },",
+              "        body: {",
+              "            mode: 'raw',",
+              "            raw: JSON.stringify({",
+              "                monitor: 'Transportation & Emergency API Monitor',",
+              "                status: 'Failed',",
+              "                endpoint: 'Mock Transportation API',",
+              "                error: 'API returned status code ' + pm.response.code,",
+              "                timestamp: new Date().toISOString()",
+              "            })",
+              "        }",
+              "    });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{mock_server_url}}/transport/routes/kathmandu",
+          "host": ["{{mock_server_url}}"],
+          "path": ["transport", "routes", "kathmandu"]
+        }
+      }
+    },
+    {
+      "name": "Monitor Emergency Alerts API",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Test for successful response",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Test for JSON content type",
+              "pm.test(\"Content-Type is JSON\", function () {",
+              "    pm.response.to.have.header(\"Content-Type\");",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "// Test for valid JSON response",
+              "pm.test(\"Response is valid JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an('object');",
+              "});",
+              "",
+              "// Test for basic structure",
+              "pm.test(\"Response has correct structure\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('district');",
+              "    pm.expect(jsonData).to.have.property('source');",
+              "    pm.expect(jsonData).to.have.property('alerts');",
+              "    pm.expect(jsonData).to.have.property('last_updated');",
+              "});",
+              "",
+              "// Send monitor results to a notification endpoint (mock)",
+              "if (pm.response.code !== 200) {",
+              "    pm.sendRequest({",
+              "        url: pm.variables.get(\"monitor_notification_url\"),",
+              "        method: 'POST',",
+              "        header: {",
+              "            'Content-Type': 'application/json'",
+              "        },",
+              "        body: {",
+              "            mode: 'raw',",
+              "            raw: JSON.stringify({",
+              "                monitor: 'Transportation & Emergency API Monitor',",
+              "                status: 'Failed',",
+              "                endpoint: 'Emergency Alerts API',",
+              "                error: 'API returned status code ' + pm.response.code,",
+              "                timestamp: new Date().toISOString()",
+              "            })",
+              "        }",
+              "    });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{mock_server_url}}/emergency/alerts?district=kathmandu",
+          "host": ["{{mock_server_url}}"],
+          "path": ["emergency", "alerts"],
+          "query": [
+            {
+              "key": "district",
+              "value": "kathmandu"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Set timestamp for monitoring",
+          "pm.variables.set('monitor_timestamp', new Date().toISOString());",
+          "",
+          "// Log monitor execution",
+          "console.log('Executing Transportation & Emergency API Monitor at ' + pm.variables.get('monitor_timestamp'));"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global test script for the monitor collection",
+          "console.log('Completed Transportation & Emergency API Monitor tests at ' + new Date().toISOString());"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "mock_server_url",
+      "value": "https://mock.mygovresponse.com",
+      "type": "string"
+    },
+    {
+      "key": "baato_api_key",
+      "value": "your_api_key_here",
+      "type": "string"
+    },
+    {
+      "key": "monitor_notification_url",
+      "value": "https://mock.mygovresponse.com/monitor/notifications",
+      "type": "string"
+    }
+  ]
+}

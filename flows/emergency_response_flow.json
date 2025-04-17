@@ -1,0 +1,255 @@
+{
+  "info": {
+    "name": "Emergency Response Flow",
+    "description": "Postman Flow that integrates emergency alerts with transportation routing and service status",
+    "schema": "https://schema.getpostman.com/json/flow/v1.0.0/collection.json"
+  },
+  "flow": [
+    {
+      "id": "start",
+      "type": "start",
+      "name": "Start",
+      "next": "setInitialVariables"
+    },
+    {
+      "id": "setInitialVariables",
+      "type": "set-variables",
+      "name": "Set Initial Variables",
+      "variables": [
+        {
+          "key": "district",
+          "value": "kathmandu"
+        },
+        {
+          "key": "origin_lat",
+          "value": "27.7172"
+        },
+        {
+          "key": "origin_lon",
+          "value": "85.3240"
+        },
+        {
+          "key": "emergency_type",
+          "value": "earthquake"
+        }
+      ],
+      "next": "getEmergencyAlerts"
+    },
+    {
+      "id": "getEmergencyAlerts",
+      "type": "request",
+      "name": "Get Emergency Alerts",
+      "request": {
+        "url": "{{mock_server_url}}/emergency/alerts?district={{district}}",
+        "method": "GET"
+      },
+      "next": "processEmergencyAlerts"
+    },
+    {
+      "id": "processEmergencyAlerts",
+      "type": "script",
+      "name": "Process Emergency Alerts",
+      "script": "// Extract emergency alerts from response\nconst alertsData = response.body;\n\n// Initialize variables\nlet hasActiveAlerts = false;\nlet highestSeverity = 'None';\nlet activeAlerts = [];\nlet affectedAreas = [];\n\n// Check if we have valid alerts data\nif (alertsData && alertsData.alerts && alertsData.alerts.length > 0) {\n    // Filter for active alerts (those that haven't expired)\n    const now = new Date();\n    activeAlerts = alertsData.alerts.filter(alert => {\n        const validUntil = new Date(alert.valid_until);\n        return validUntil > now;\n    });\n    \n    // Check if we have any active alerts\n    if (activeAlerts.length > 0) {\n        hasActiveAlerts = true;\n        \n        // Determine highest severity level\n        const severityLevels = {\n            'Low': 1,\n            'Moderate': 2,\n            'High': 3,\n            'Severe': 4,\n            'Extreme': 5\n        };\n        \n        let maxSeverityLevel = 0;\n        activeAlerts.forEach(alert => {\n            const severityLevel = severityLevels[alert.severity] || 0;\n            if (severityLevel > maxSeverityLevel) {\n                maxSeverityLevel = severityLevel;\n                highestSeverity = alert.severity;\n            }\n            \n            // Collect affected areas\n            if (alert.affected_areas && Array.isArray(alert.affected_areas)) {\n                affectedAreas = [...affectedAreas, ...alert.affected_areas];\n            }\n        });\n        \n        // Remove duplicates from affected areas\n        affectedAreas = [...new Set(affectedAreas)];\n    }\n}\n\n// Set variables for use in later steps\nflow.setVariable('has_active_alerts', hasActiveAlerts);\nflow.setVariable('highest_severity', highestSeverity);\nflow.setVariable('active_alerts', activeAlerts);\nflow.setVariable('affected_areas', affectedAreas);\n",
+      "next": "checkForActiveAlerts"
+    },
+    {
+      "id": "checkForActiveAlerts",
+      "type": "switch",
+      "name": "Check for Active Alerts",
+      "conditions": [
+        {
+          "condition": "flow.variables.has_active_alerts === true",
+          "next": "getEmergencyGuidelines"
+        },
+        {
+          "condition": "true",
+          "next": "noActiveAlertsPath"
+        }
+      ]
+    },
+    {
+      "id": "noActiveAlertsPath",
+      "type": "script",
+      "name": "Process No Active Alerts",
+      "script": "// Set default values for no emergency scenario\nflow.setVariable('emergency_instructions', 'No active emergency alerts for your area.');\nflow.setVariable('emergency_contacts', []);\nflow.setVariable('evacuation_needed', false);\n",
+      "next": "getWeatherData"
+    },
+    {
+      "id": "getEmergencyGuidelines",
+      "type": "request",
+      "name": "Get Emergency Guidelines",
+      "request": {
+        "url": "{{mock_server_url}}/emergency/guidelines?type={{emergency_type}}",
+        "method": "GET"
+      },
+      "next": "processEmergencyGuidelines"
+    },
+    {
+      "id": "processEmergencyGuidelines",
+      "type": "script",
+      "name": "Process Emergency Guidelines",
+      "script": "// Extract emergency guidelines from response\nconst guidelinesData = response.body;\n\n// Initialize variables\nlet emergencyInstructions = [];\nlet emergencyContacts = [];\n\n// Check if we have valid guidelines data\nif (guidelinesData && guidelinesData.guidelines) {\n    // Get 'during' emergency guidelines as these are most relevant during an active alert\n    if (guidelinesData.guidelines.during && Array.isArray(guidelinesData.guidelines.during)) {\n        guidelinesData.guidelines.during.forEach(guideline => {\n            emergencyInstructions.push(`${guideline.title}: ${guideline.description}`);\n        });\n    }\n    \n    // Get emergency contacts\n    if (guidelinesData.emergency_contacts && Array.isArray(guidelinesData.emergency_contacts)) {\n        emergencyContacts = guidelinesData.emergency_contacts;\n    }\n}\n\n// Determine if evacuation is needed based on alert severity\nlet evacuationNeeded = false;\nif (flow.variables.highest_severity === 'High' || \n    flow.variables.highest_severity === 'Severe' || \n    flow.variables.highest_severity === 'Extreme') {\n    evacuationNeeded = true;\n}\n\n// Set variables for use in later steps\nflow.setVariable('emergency_instructions', emergencyInstructions);\nflow.setVariable('emergency_contacts', emergencyContacts);\nflow.setVariable('evacuation_needed', evacuationNeeded);\n",
+      "next": "getWeatherData"
+    },
+    {
+      "id": "getWeatherData",
+      "type": "request",
+      "name": "Get Weather Data",
+      "request": {
+        "url": "https://nepal-weather-api.herokuapp.com/api/?place={{district}}",
+        "method": "GET"
+      },
+      "next": "checkWeatherResponse"
+    },
+    {
+      "id": "checkWeatherResponse",
+      "type": "switch",
+      "name": "Check Weather Response",
+      "conditions": [
+        {
+          "condition": "response.status === 200",
+          "next": "processWeatherData"
+        },
+        {
+          "condition": "true",
+          "next": "handleWeatherError"
+        }
+      ]
+    },
+    {
+      "id": "handleWeatherError",
+      "type": "request",
+      "name": "Get Mock Weather Data",
+      "request": {
+        "url": "{{mock_server_url}}/weather/{{district}}",
+        "method": "GET"
+      },
+      "next": "processWeatherData"
+    },
+    {
+      "id": "processWeatherData",
+      "type": "script",
+      "name": "Process Weather Data",
+      "script": "// Extract weather data from response\nconst weatherData = response.body;\n\n// Initialize variables\nlet weatherCondition = 'Unknown';\nlet weatherImpact = 'None';\n\n// Check if we have valid weather data\nif (weatherData && weatherData.status === 'true') {\n    // Determine weather condition based on rain data\n    if (weatherData.rain && weatherData.rain.includes('mm')) {\n        const rainAmount = parseFloat(weatherData.rain);\n        if (rainAmount > 10) {\n            weatherCondition = 'Heavy Rain';\n            weatherImpact = 'Severe';\n        } else if (rainAmount > 0) {\n            weatherCondition = 'Light Rain';\n            weatherImpact = 'Moderate';\n        } else {\n            weatherCondition = 'Clear';\n            weatherImpact = 'None';\n        }\n    } else {\n        weatherCondition = 'Clear';\n        weatherImpact = 'None';\n    }\n}\n\n// Set variables for use in later steps\nflow.setVariable('weather_condition', weatherCondition);\nflow.setVariable('weather_impact', weatherImpact);\n",
+      "next": "checkEvacuationNeeded"
+    },
+    {
+      "id": "checkEvacuationNeeded",
+      "type": "switch",
+      "name": "Check if Evacuation is Needed",
+      "conditions": [
+        {
+          "condition": "flow.variables.evacuation_needed === true",
+          "next": "getEvacuationRoutes"
+        },
+        {
+          "condition": "true",
+          "next": "getEmergencyContacts"
+        }
+      ]
+    },
+    {
+      "id": "getEvacuationRoutes",
+      "type": "request",
+      "name": "Get Evacuation Routes",
+      "request": {
+        "url": "https://api.baato.io/api/v1/directions?key={{baato_api_key}}&points={{origin_lat}},{{origin_lon}}|27.6939,85.2799&mode=car",
+        "method": "GET"
+      },
+      "next": "checkRoutesResponse"
+    },
+    {
+      "id": "checkRoutesResponse",
+      "type": "switch",
+      "name": "Check Routes Response",
+      "conditions": [
+        {
+          "condition": "response.status === 200",
+          "next": "processEvacuationRoutes"
+        },
+        {
+          "condition": "true",
+          "next": "handleRoutesError"
+        }
+      ]
+    },
+    {
+      "id": "handleRoutesError",
+      "type": "request",
+      "name": "Get Mock Evacuation Routes",
+      "request": {
+        "url": "{{mock_server_url}}/transport/routes/evacuation?origin={{origin_lat}},{{origin_lon}}",
+        "method": "GET"
+      },
+      "next": "processEvacuationRoutes"
+    },
+    {
+      "id": "processEvacuationRoutes",
+      "type": "script",
+      "name": "Process Evacuation Routes",
+      "script": "// Extract evacuation routes from response\nconst routesData = response.body;\n\n// Initialize variables\nlet evacuationRoutes = [];\nlet evacuationTime = 'Unknown';\nlet evacuationDistance = 'Unknown';\n\n// Check if we have valid routes data from Baato API\nif (routesData && routesData.data && routesData.data.routes && routesData.data.routes.length > 0) {\n    const route = routesData.data.routes[0];\n    \n    // Extract route information\n    evacuationTime = Math.round(route.duration / 60) + ' minutes';\n    evacuationDistance = (route.distance / 1000).toFixed(1) + ' km';\n    \n    // Extract step-by-step directions if available\n    if (route.legs && route.legs.length > 0 && route.legs[0].steps) {\n        route.legs[0].steps.forEach(step => {\n            if (step.maneuver && step.maneuver.instruction) {\n                evacuationRoutes.push(step.maneuver.instruction);\n            }\n        });\n    }\n} \n// Check if we have valid routes data from mock API\nelse if (routesData && routesData.routes && routesData.routes.length > 0) {\n    const route = routesData.routes[0];\n    \n    // Extract route information\n    evacuationTime = route.estimated_time || 'Unknown';\n    evacuationDistance = route.distance || 'Unknown';\n    \n    // Extract step-by-step directions if available\n    if (route.directions && Array.isArray(route.directions)) {\n        evacuationRoutes = route.directions;\n    }\n}\n\n// If no routes were found, provide a default message\nif (evacuationRoutes.length === 0) {\n    evacuationRoutes.push('Head to the nearest open area away from buildings');\n    evacuationRoutes.push('Follow instructions from emergency personnel');\n}\n\n// Set variables for use in later steps\nflow.setVariable('evacuation_routes', evacuationRoutes);\nflow.setVariable('evacuation_time', evacuationTime);\nflow.setVariable('evacuation_distance', evacuationDistance);\n",
+      "next": "getEmergencyContacts"
+    },
+    {
+      "id": "getEmergencyContacts",
+      "type": "request",
+      "name": "Get Emergency Contacts",
+      "request": {
+        "url": "{{mock_server_url}}/emergency/contacts?district={{district}}",
+        "method": "GET"
+      },
+      "next": "processEmergencyContacts"
+    },
+    {
+      "id": "processEmergencyContacts",
+      "type": "script",
+      "name": "Process Emergency Contacts",
+      "script": "// Extract emergency contacts from response\nconst contactsData = response.body;\n\n// Initialize variables\nlet emergencyContactsList = [];\n\n// Check if we have valid contacts data\nif (contactsData && contactsData.emergency_contacts && Array.isArray(contactsData.emergency_contacts)) {\n    // Sort contacts by category priority (Police, Ambulance, Fire, etc.)\n    const priorityOrder = {\n        'Police': 1,\n        'Ambulance': 2,\n        'Fire': 3,\n        'Hospital': 4,\n        'Disaster Management': 5\n    };\n    \n    const sortedContacts = [...contactsData.emergency_contacts].sort((a, b) => {\n        const priorityA = priorityOrder[a.category] || 999;\n        const priorityB = priorityOrder[b.category] || 999;\n        return priorityA - priorityB;\n    });\n    \n    // Format contacts for display\n    sortedContacts.forEach(contact => {\n        emergencyContactsList.push({\n            category: contact.category,\n            name: contact.name,\n            phone: contact.phone,\n            alt_phone: contact.alt_phone || null,\n            address: contact.address || null\n        });\n    });\n}\n\n// If we already have emergency contacts from guidelines, merge them\nif (flow.variables.emergency_contacts && Array.isArray(flow.variables.emergency_contacts) && flow.variables.emergency_contacts.length > 0) {\n    // Convert existing contacts to the same format\n    const existingContacts = flow.variables.emergency_contacts.map(contact => ({\n        category: 'Emergency',\n        name: contact.name,\n        phone: contact.phone,\n        alt_phone: null,\n        address: null\n    }));\n    \n    // Merge and remove duplicates based on phone number\n    const allContacts = [...existingContacts, ...emergencyContactsList];\n    const phoneNumbers = new Set();\n    emergencyContactsList = allContacts.filter(contact => {\n        if (phoneNumbers.has(contact.phone)) {\n            return false;\n        }\n        phoneNumbers.add(contact.phone);\n        return true;\n    });\n}\n\n// Set variables for use in later steps\nflow.setVariable('emergency_contacts_list', emergencyContactsList);\n",
+      "next": "generateEmergencyResponse"
+    },
+    {
+      "id": "generateEmergencyResponse",
+      "type": "script",
+      "name": "Generate Emergency Response",
+      "script": "// Generate an integrated emergency response report\nlet emergencyResponse = {\n    timestamp: new Date().toISOString(),\n    district: flow.variables.district,\n    alert_status: {\n        has_active_alerts: flow.variables.has_active_alerts,\n        highest_severity: flow.variables.highest_severity,\n        active_alerts: flow.variables.active_alerts || [],\n        affected_areas: flow.variables.affected_areas || []\n    },\n    weather_conditions: {\n        condition: flow.variables.weather_condition,\n        impact: flow.variables.weather_impact\n    },\n    emergency_instructions: flow.variables.emergency_instructions,\n    evacuation: {\n        needed: flow.variables.evacuation_needed,\n        routes: flow.variables.evacuation_routes || [],\n        estimated_time: flow.variables.evacuation_time || 'N/A',\n        distance: flow.variables.evacuation_distance || 'N/A'\n    },\n    emergency_contacts: flow.variables.emergency_contacts_list || [],\n    safety_recommendations: []\n};\n\n// Generate safety recommendations based on the integrated data\nlet recommendations = [];\n\n// Alert-based recommendations\nif (flow.variables.has_active_alerts) {\n    recommendations.push('Stay tuned to official emergency channels for updates');\n    \n    if (flow.variables.highest_severity === 'Extreme' || flow.variables.highest_severity === 'Severe') {\n        recommendations.push('Follow evacuation orders immediately if issued by authorities');\n    }\n}\n\n// Weather impact recommendations\nif (flow.variables.weather_impact === 'Severe') {\n    recommendations.push('Heavy rainfall may worsen conditions. Avoid flood-prone areas');\n    recommendations.push('Be cautious of landslides in hilly areas');\n}\n\n// Evacuation recommendations\nif (flow.variables.evacuation_needed) {\n    recommendations.push('Evacuate to designated safe zones following the provided routes');\n    recommendations.push('Bring essential supplies and medications');\n    recommendations.push('Assist vulnerable individuals if safe to do so');\n}\n\n// General safety recommendations\nrecommendations.push('Keep emergency contacts readily available');\nrecommendations.push('Conserve phone battery for emergency communications');\n\n// Add recommendations to the response\nemergencyResponse.safety_recommendations = recommendations;\n\n// Set the final emergency response as a variable\nflow.setVariable('emergency_response', emergencyResponse);\n",
+      "next": "sendEmergencyAlert"
+    },
+    {
+      "id": "sendEmergencyAlert",
+      "type": "request",
+      "name": "Send Emergency Alert (Mock)",
+      "request": {
+        "url": "{{mock_server_url}}/notifications/emergency",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"recipient\": \"user@example.com\",\n    \"priority\": \"{{highest_severity}}\",\n    \"subject\": \"Emergency Alert: {{#if has_active_alerts}}Active {{highest_severity}} Alert for {{district}}{{else}}No Active Alerts for {{district}}{{/if}}\",\n    \"message\": \"{{#if has_active_alerts}}EMERGENCY ALERT: {{highest_severity}} level situation in {{district}}. {{#if evacuation_needed}}Evacuation recommended.{{else}}Stay alert and follow safety guidelines.{{/if}}{{else}}No active emergency alerts for your area at this time.{{/if}}\",\n    \"response_data\": {{emergency_response}}\n}"
+        }
+      },
+      "next": "end"
+    },
+    {
+      "id": "end",
+      "type": "end",
+      "name": "End"
+    }
+  ],
+  "variable": [
+    {
+      "key": "mock_server_url",
+      "value": "https://mock.mygovresponse.com",
+      "type": "string"
+    },
+    {
+      "key": "baato_api_key",
+      "value": "your_api_key_here",
+      "type": "string"
+    }
+  ]
+}

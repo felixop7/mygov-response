@@ -1,0 +1,242 @@
+{
+  "info": {
+    "name": "Calendar & Holiday Services",
+    "description": "Collection of holiday and calendar-related APIs for the MyGov Response Hub",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Nepal Events API",
+      "description": "Holiday and calendar events data for Nepal in both AD and BS calendars",
+      "item": [
+        {
+          "name": "Get Date Information (AD)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://npclapi.casualsnek.eu.org/v2/date/ad/2023-5-15",
+              "protocol": "https",
+              "host": ["npclapi", "casualsnek", "eu", "org"],
+              "path": ["v2", "date", "ad", "2023-5-15"]
+            },
+            "description": "Get holiday and event information for a specific date in AD calendar"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Date Information (BS)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://npclapi.casualsnek.eu.org/v2/date/bs/2080-2-1",
+              "protocol": "https",
+              "host": ["npclapi", "casualsnek", "eu", "org"],
+              "path": ["v2", "date", "bs", "2080-2-1"]
+            },
+            "description": "Get holiday and event information for a specific date in BS calendar"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Date Range (AD)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://npclapi.casualsnek.eu.org/v2/range/ad/from/2023-1-1/to/2023-1-31",
+              "protocol": "https",
+              "host": ["npclapi", "casualsnek", "eu", "org"],
+              "path": ["v2", "range", "ad", "from", "2023-1-1", "to", "2023-1-31"]
+            },
+            "description": "Get holiday and event information for a date range in AD calendar"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Date Range (BS)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://npclapi.casualsnek.eu.org/v2/range/bs/from/2080-1-1/to/2080-1-30",
+              "protocol": "https",
+              "host": ["npclapi", "casualsnek", "eu", "org"],
+              "path": ["v2", "range", "bs", "from", "2080-1-1", "to", "2080-1-30"]
+            },
+            "description": "Get holiday and event information for a date range in BS calendar"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "International Holiday API (Fallback)",
+      "description": "Fallback holiday APIs for when Nepal-specific data is unavailable",
+      "item": [
+        {
+          "name": "Holiday API - Nepal Holidays",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://holidayapi.com/v1/holidays?key={{holidayapi_key}}&country=NP&year=2023",
+              "protocol": "https",
+              "host": ["holidayapi", "com"],
+              "path": ["v1", "holidays"],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{holidayapi_key}}"
+                },
+                {
+                  "key": "country",
+                  "value": "NP"
+                },
+                {
+                  "key": "year",
+                  "value": "2023"
+                }
+              ]
+            },
+            "description": "Get holidays for Nepal using Holiday API"
+          },
+          "response": []
+        },
+        {
+          "name": "Calendarific - Nepal Holidays",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://calendarific.com/api/v2/holidays?api_key={{calendarific_api_key}}&country=NP&year=2023",
+              "protocol": "https",
+              "host": ["calendarific", "com"],
+              "path": ["api", "v2", "holidays"],
+              "query": [
+                {
+                  "key": "api_key",
+                  "value": "{{calendarific_api_key}}"
+                },
+                {
+                  "key": "country",
+                  "value": "NP"
+                },
+                {
+                  "key": "year",
+                  "value": "2023"
+                }
+              ]
+            },
+            "description": "Get holidays for Nepal using Calendarific API"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Mock Holiday Server",
+      "description": "Mock server for holiday data when APIs are unavailable",
+      "item": [
+        {
+          "name": "Mock - Get Holidays (AD)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{mock_server_url}}/holidays/ad/2023",
+              "host": ["{{mock_server_url}}"],
+              "path": ["holidays", "ad", "2023"]
+            },
+            "description": "Get mock holiday data for AD calendar"
+          },
+          "response": [
+            {
+              "name": "Mock Holiday Data - AD 2023",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{mock_server_url}}/holidays/ad/2023",
+                  "host": ["{{mock_server_url}}"],
+                  "path": ["holidays", "ad", "2023"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"2023\": {\n    \"1\": {\n      \"1\": {\n        \"date\": {\n          \"ad\": {\n            \"day\": 1,\n            \"month\": 1,\n            \"year\": 2023\n          },\n          \"bs\": {\n            \"day\": 17,\n            \"month\": 9,\n            \"year\": 2079\n          }\n        },\n        \"event\": [\n          \"International New Year\"\n        ],\n        \"public_holiday\": true,\n        \"tithi\": \"नवमी\"\n      },\n      \"14\": {\n        \"date\": {\n          \"ad\": {\n            \"day\": 14,\n            \"month\": 1,\n            \"year\": 2023\n          },\n          \"bs\": {\n            \"day\": 30,\n            \"month\": 9,\n            \"year\": 2079\n          }\n        },\n        \"event\": [\n          \"Maghe Sankranti\"\n        ],\n        \"public_holiday\": true,\n        \"tithi\": \"द्वादशी\"\n      }\n    },\n    \"4\": {\n      \"14\": {\n        \"date\": {\n          \"ad\": {\n            \"day\": 14,\n            \"month\": 4,\n            \"year\": 2023\n          },\n          \"bs\": {\n            \"day\": 1,\n            \"month\": 1,\n            \"year\": 2080\n          }\n        },\n        \"event\": [\n          \"Nepali New Year\"\n        ],\n        \"public_holiday\": true,\n        \"tithi\": \"चतुर्थी\"\n      }\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Mock - Get Holidays (BS)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{mock_server_url}}/holidays/bs/2080",
+              "host": ["{{mock_server_url}}"],
+              "path": ["holidays", "bs", "2080"]
+            },
+            "description": "Get mock holiday data for BS calendar"
+          },
+          "response": [
+            {
+              "name": "Mock Holiday Data - BS 2080",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{mock_server_url}}/holidays/bs/2080",
+                  "host": ["{{mock_server_url}}"],
+                  "path": ["holidays", "bs", "2080"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"2080\": {\n    \"1\": {\n      \"1\": {\n        \"date\": {\n          \"ad\": {\n            \"day\": 14,\n            \"month\": 4,\n            \"year\": 2023\n          },\n          \"bs\": {\n            \"day\": 1,\n            \"month\": 1,\n            \"year\": 2080\n          }\n        },\n        \"event\": [\n          \"नेपाली नयाँ वर्ष\"\n        ],\n        \"public_holiday\": true,\n        \"tithi\": \"चतुर्थी\"\n      }\n    },\n    \"2\": {\n      \"19\": {\n        \"date\": {\n          \"ad\": {\n            \"day\": 1,\n            \"month\": 6,\n            \"year\": 2023\n          },\n          \"bs\": {\n            \"day\": 19,\n            \"month\": 2,\n            \"year\": 2080\n          }\n        },\n        \"event\": [\n          \"गणतन्त्र दिवस\"\n        ],\n        \"public_holiday\": true,\n        \"tithi\": \"द्वादशी\"\n      }\n    }\n  }\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "holidayapi_key",
+      "value": "your_api_key_here",
+      "type": "string"
+    },
+    {
+      "key": "calendarific_api_key",
+      "value": "your_api_key_here",
+      "type": "string"
+    },
+    {
+      "key": "mock_server_url",
+      "value": "https://mock.mygovresponse.com",
+      "type": "string"
+    }
+  ]
+}

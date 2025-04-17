@@ -1,0 +1,201 @@
+{
+  "info": {
+    "name": "Financial Planning Flow",
+    "description": "Postman Flow that combines currency exchange rates with utility service information for financial planning",
+    "schema": "https://schema.getpostman.com/json/flow/v1.0.0/collection.json"
+  },
+  "flow": [
+    {
+      "id": "start",
+      "type": "start",
+      "name": "Start",
+      "next": "setInitialVariables"
+    },
+    {
+      "id": "setInitialVariables",
+      "type": "set-variables",
+      "name": "Set Initial Variables",
+      "variables": [
+        {
+          "key": "district",
+          "value": "kathmandu"
+        },
+        {
+          "key": "base_currency",
+          "value": "NPR"
+        },
+        {
+          "key": "target_currency",
+          "value": "USD"
+        },
+        {
+          "key": "amount",
+          "value": "10000"
+        },
+        {
+          "key": "stock_symbol",
+          "value": "AAPL"
+        }
+      ],
+      "next": "getCurrentDate"
+    },
+    {
+      "id": "getCurrentDate",
+      "type": "script",
+      "name": "Calculate Dates",
+      "script": "// Get current date in ISO format\nconst now = new Date();\n\n// Format current date as YYYY-MM-DD\nconst year = now.getFullYear();\nconst month = now.getMonth() + 1; // JavaScript months are 0-based\nconst day = now.getDate();\n\n// Set variables for different date formats\nflow.setVariable('current_date_iso', `${year}-${month}-${day}`);\nflow.setVariable('formatted_date', `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);\n\n// Calculate date 7 days ago for historical comparison\nconst lastWeek = new Date(now);\nlastWeek.setDate(lastWeek.getDate() - 7);\nconst lastWeekYear = lastWeek.getFullYear();\nconst lastWeekMonth = lastWeek.getMonth() + 1;\nconst lastWeekDay = lastWeek.getDate();\nflow.setVariable('last_week_date_iso', `${lastWeekYear}-${lastWeekMonth}-${lastWeekDay}`);\nflow.setVariable('last_week_formatted', `${lastWeekYear}-${lastWeekMonth.toString().padStart(2, '0')}-${lastWeekDay.toString().padStart(2, '0')}`);\n",
+      "next": "getForexData"
+    },
+    {
+      "id": "getForexData",
+      "type": "request",
+      "name": "Get Latest Forex Data",
+      "request": {
+        "url": "{{mock_server_url}}/finance/forex/latest",
+        "method": "GET"
+      },
+      "next": "processForexData"
+    },
+    {
+      "id": "processForexData",
+      "type": "script",
+      "name": "Process Forex Data",
+      "script": "// Extract forex data from response\nconst forexData = response.body;\n\n// Initialize variables\nlet exchangeRates = {};\nlet conversionRate = 0;\nlet convertedAmount = 0;\n\n// Check if we have valid forex data\nif (forexData && forexData.rates) {\n    // Store all exchange rates\n    exchangeRates = forexData.rates;\n    \n    // Get specific conversion rate for target currency\n    const targetCurrency = flow.variables.target_currency;\n    if (exchangeRates[targetCurrency]) {\n        // Use mid-rate between buy and sell\n        conversionRate = (exchangeRates[targetCurrency].buy + exchangeRates[targetCurrency].sell) / 2;\n        \n        // Calculate converted amount\n        const amount = parseFloat(flow.variables.amount);\n        convertedAmount = amount / conversionRate;\n    }\n}\n\n// Set variables for use in later steps\nflow.setVariable('exchange_rates', exchangeRates);\nflow.setVariable('conversion_rate', conversionRate);\nflow.setVariable('converted_amount', convertedAmount.toFixed(2));\n",
+      "next": "getHistoricalForexData"
+    },
+    {
+      "id": "getHistoricalForexData",
+      "type": "request",
+      "name": "Get Historical Forex Data",
+      "request": {
+        "url": "{{mock_server_url}}/finance/forex/historical?date={{last_week_formatted}}",
+        "method": "GET"
+      },
+      "next": "processHistoricalForexData"
+    },
+    {
+      "id": "processHistoricalForexData",
+      "type": "script",
+      "name": "Process Historical Forex Data",
+      "script": "// Extract historical forex data from response\nconst historicalForexData = response.body;\n\n// Initialize variables\nlet historicalRates = {};\nlet rateChanges = {};\nlet targetCurrencyChange = 0;\n\n// Check if we have valid historical forex data\nif (historicalForexData && historicalForexData.rates) {\n    // Store historical exchange rates\n    historicalRates = historicalForexData.rates;\n    \n    // Calculate rate changes for all currencies\n    const currentRates = flow.variables.exchange_rates;\n    for (const currency in currentRates) {\n        if (historicalRates[currency]) {\n            // Calculate mid-rates\n            const currentMidRate = (currentRates[currency].buy + currentRates[currency].sell) / 2;\n            const historicalMidRate = (historicalRates[currency].buy + historicalRates[currency].sell) / 2;\n            \n            // Calculate percentage change\n            const percentChange = ((currentMidRate - historicalMidRate) / historicalMidRate) * 100;\n            \n            rateChanges[currency] = {\n                current: currentMidRate,\n                historical: historicalMidRate,\n                change: percentChange.toFixed(2),\n                trend: percentChange > 0 ? 'up' : (percentChange < 0 ? 'down' : 'stable')\n            };\n            \n            // Store target currency change specifically\n            if (currency === flow.variables.target_currency) {\n                targetCurrencyChange = percentChange;\n            }\n        }\n    }\n}\n\n// Set variables for use in later steps\nflow.setVariable('historical_rates', historicalRates);\nflow.setVariable('rate_changes', rateChanges);\nflow.setVariable('target_currency_change', targetCurrencyChange.toFixed(2));\n",
+      "next": "getStockData"
+    },
+    {
+      "id": "getStockData",
+      "type": "request",
+      "name": "Get Stock Data",
+      "request": {
+        "url": "{{yahoo_finance_api_url}}/get_stock_chart?symbol={{stock_symbol}}&interval=1d&range=1mo",
+        "method": "GET"
+      },
+      "next": "checkStockResponse"
+    },
+    {
+      "id": "checkStockResponse",
+      "type": "switch",
+      "name": "Check Stock Response",
+      "conditions": [
+        {
+          "condition": "response.status === 200",
+          "next": "processStockData"
+        },
+        {
+          "condition": "true",
+          "next": "handleStockError"
+        }
+      ]
+    },
+    {
+      "id": "handleStockError",
+      "type": "script",
+      "name": "Handle Stock Error",
+      "script": "// Set default stock data\nflow.setVariable('stock_price', 'N/A');\nflow.setVariable('stock_change', 'N/A');\nflow.setVariable('stock_trend', 'unknown');\n",
+      "next": "getUtilityData"
+    },
+    {
+      "id": "processStockData",
+      "type": "script",
+      "name": "Process Stock Data",
+      "script": "// Extract stock data from response\nconst stockData = response.body;\n\n// Initialize variables\nlet stockPrice = 'N/A';\nlet stockChange = 'N/A';\nlet stockTrend = 'unknown';\n\n// Check if we have valid stock data\nif (stockData && stockData.chart && stockData.chart.result && stockData.chart.result.length > 0) {\n    const result = stockData.chart.result[0];\n    \n    // Get latest price from meta data\n    if (result.meta && result.meta.regularMarketPrice) {\n        stockPrice = result.meta.regularMarketPrice;\n    }\n    \n    // Calculate change from previous close\n    if (result.meta && result.meta.chartPreviousClose) {\n        const previousClose = result.meta.chartPreviousClose;\n        const percentChange = ((stockPrice - previousClose) / previousClose) * 100;\n        stockChange = percentChange.toFixed(2);\n        stockTrend = percentChange > 0 ? 'up' : (percentChange < 0 ? 'down' : 'stable');\n    }\n}\n\n// Set variables for use in later steps\nflow.setVariable('stock_price', stockPrice);\nflow.setVariable('stock_change', stockChange);\nflow.setVariable('stock_trend', stockTrend);\n",
+      "next": "getUtilityData"
+    },
+    {
+      "id": "getUtilityData",
+      "type": "request",
+      "name": "Get Utility Service Status",
+      "request": {
+        "url": "{{mock_server_url}}/utility/electricity/status?district={{district}}",
+        "method": "GET"
+      },
+      "next": "processUtilityData"
+    },
+    {
+      "id": "processUtilityData",
+      "type": "script",
+      "name": "Process Utility Data",
+      "script": "// Extract utility data from response\nconst utilityData = response.body;\n\n// Initialize variables\nlet utilityStatus = 'Unknown';\nlet utilityAreas = [];\nlet utilityAnnouncements = [];\n\n// Check if we have valid utility data\nif (utilityData) {\n    // Get overall status\n    utilityStatus = utilityData.overall_status || 'Unknown';\n    \n    // Process areas with issues\n    if (utilityData.areas && Array.isArray(utilityData.areas)) {\n        utilityAreas = utilityData.areas.filter(area => area.status !== 'Normal').map(area => ({\n            name: area.name,\n            status: area.status,\n            reason: area.reason,\n            restoration: area.estimated_restoration\n        }));\n    }\n    \n    // Get announcements\n    if (utilityData.announcements && Array.isArray(utilityData.announcements)) {\n        utilityAnnouncements = utilityData.announcements;\n    }\n}\n\n// Set variables for use in later steps\nflow.setVariable('utility_status', utilityStatus);\nflow.setVariable('utility_areas', utilityAreas);\nflow.setVariable('utility_announcements', utilityAnnouncements);\n",
+      "next": "getPowerOutageData"
+    },
+    {
+      "id": "getPowerOutageData",
+      "type": "request",
+      "name": "Get Power Outage Data",
+      "request": {
+        "url": "{{mock_server_url}}/utility/electricity/powercuts?district={{district}}&date={{formatted_date}}",
+        "method": "GET"
+      },
+      "next": "processPowerOutageData"
+    },
+    {
+      "id": "processPowerOutageData",
+      "type": "script",
+      "name": "Process Power Outage Data",
+      "script": "// Extract power outage data from response\nconst powerOutageData = response.body;\n\n// Initialize variables\nlet hasPowerOutage = false;\nlet powerOutages = [];\n\n// Check if we have valid power outage data\nif (powerOutageData && powerOutageData.scheduled_power_cuts && powerOutageData.scheduled_power_cuts.length > 0) {\n    hasPowerOutage = true;\n    powerOutages = powerOutageData.scheduled_power_cuts.map(outage => ({\n        id: outage.id,\n        area: outage.area,\n        start_time: outage.start_time,\n        end_time: outage.end_time,\n        duration: calculateDuration(outage.start_time, outage.end_time),\n        reason: outage.reason\n    }));\n}\n\n// Helper function to calculate duration between two time strings (HH:MM)\nfunction calculateDuration(start, end) {\n    const [startHour, startMin] = start.split(':').map(Number);\n    let [endHour, endMin] = end.split(':').map(Number);\n    \n    // Handle cases where end time is on the next day\n    if (endHour < startHour) {\n        endHour += 24;\n    }\n    \n    const totalStartMins = startHour * 60 + startMin;\n    const totalEndMins = endHour * 60 + endMin;\n    const durationMins = totalEndMins - totalStartMins;\n    \n    const hours = Math.floor(durationMins / 60);\n    const mins = durationMins % 60;\n    \n    return `${hours} hour${hours !== 1 ? 's' : ''} ${mins} minute${mins !== 1 ? 's' : ''}`;\n}\n\n// Set variables for use in later steps\nflow.setVariable('has_power_outage', hasPowerOutage);\nflow.setVariable('power_outages', powerOutages);\n",
+      "next": "generateFinancialReport"
+    },
+    {
+      "id": "generateFinancialReport",
+      "type": "script",
+      "name": "Generate Financial Report",
+      "script": "// Generate an integrated financial report\nlet financialReport = {\n    date: flow.variables.formatted_date,\n    district: flow.variables.district,\n    currency: {\n        base: flow.variables.base_currency,\n        target: flow.variables.target_currency,\n        conversion_rate: flow.variables.conversion_rate,\n        converted_amount: {\n            original: flow.variables.amount + ' ' + flow.variables.base_currency,\n            converted: flow.variables.converted_amount + ' ' + flow.variables.target_currency\n        },\n        trend: {\n            change: flow.variables.target_currency_change + '%',\n            direction: parseFloat(flow.variables.target_currency_change) > 0 ? 'up' : (parseFloat(flow.variables.target_currency_change) < 0 ? 'down' : 'stable'),\n            period: '7 days'\n        }\n    },\n    stock: {\n        symbol: flow.variables.stock_symbol,\n        price: flow.variables.stock_price,\n        change: flow.variables.stock_change + '%',\n        trend: flow.variables.stock_trend\n    },\n    utilities: {\n        status: flow.variables.utility_status,\n        problem_areas: flow.variables.utility_areas,\n        announcements: flow.variables.utility_announcements,\n        power_outages: {\n            has_outages: flow.variables.has_power_outage,\n            scheduled_outages: flow.variables.power_outages\n        }\n    },\n    financial_impact: {},\n    recommendations: []\n};\n\n// Calculate potential financial impact of power outages\nlet financialImpact = {\n    estimated_cost: 0,\n    affected_hours: 0,\n    details: []\n};\n\nif (flow.variables.has_power_outage && flow.variables.power_outages.length > 0) {\n    // Assume an average cost of 500 NPR per hour of power outage for a business\n    const hourlyImpact = 500;\n    let totalHours = 0;\n    \n    flow.variables.power_outages.forEach(outage => {\n        // Extract hours from duration string (e.g., \"4 hours 30 minutes\")\n        const hourMatch = outage.duration.match(/(\\d+)\\s+hour/i);\n        const hours = hourMatch ? parseInt(hourMatch[1]) : 0;\n        \n        // Extract minutes and convert to fraction of hour\n        const minMatch = outage.duration.match(/(\\d+)\\s+minute/i);\n        const minutes = minMatch ? parseInt(minMatch[1]) / 60 : 0;\n        \n        const outageHours = hours + minutes;\n        totalHours += outageHours;\n        \n        const outageCost = outageHours * hourlyImpact;\n        \n        financialImpact.details.push({\n            area: outage.area,\n            duration: outage.duration,\n            estimated_cost: outageCost.toFixed(2) + ' ' + flow.variables.base_currency\n        });\n    });\n    \n    financialImpact.affected_hours = totalHours.toFixed(2);\n    financialImpact.estimated_cost = (totalHours * hourlyImpact).toFixed(2) + ' ' + flow.variables.base_currency;\n}\n\n// Add financial impact to report\nfinancialReport.financial_impact = financialImpact;\n\n// Generate financial recommendations\nlet recommendations = [];\n\n// Currency-based recommendations\nif (parseFloat(flow.variables.target_currency_change) > 2) {\n    recommendations.push(`${flow.variables.target_currency} has strengthened against ${flow.variables.base_currency} by ${flow.variables.target_currency_change}% in the last week. Consider delaying non-essential foreign currency purchases.`);\n} else if (parseFloat(flow.variables.target_currency_change) < -2) {\n    recommendations.push(`${flow.variables.target_currency} has weakened against ${flow.variables.base_currency} by ${Math.abs(parseFloat(flow.variables.target_currency_change))}% in the last week. This may be a good time for foreign currency purchases if needed.`);\n}\n\n// Utility-based recommendations\nif (flow.variables.has_power_outage) {\n    recommendations.push('Scheduled power outages may impact business operations. Consider investing in backup power solutions.');\n    recommendations.push(`Estimated financial impact of upcoming power outages: ${financialImpact.estimated_cost}.`);\n}\n\n// Stock-based recommendations\nif (flow.variables.stock_price !== 'N/A') {\n    if (parseFloat(flow.variables.stock_change) > 5) {\n        recommendations.push(`${flow.variables.stock_symbol} has shown strong performance (${flow.variables.stock_change}% increase). Consider reviewing your investment portfolio.`);\n    } else if (parseFloat(flow.variables.stock_change) < -5) {\n        recommendations.push(`${flow.variables.stock_symbol} has declined by ${Math.abs(parseFloat(flow.variables.stock_change))}%. Monitor market conditions closely.`);\n    }\n}\n\n// General financial recommendations\nrecommendations.push('Review your utility usage patterns to optimize costs during scheduled outages.');\nrecommendations.push('Consider setting up automatic currency conversion alerts for significant rate changes.');\n\n// Add recommendations to the report\nfinancialReport.recommendations = recommendations;\n\n// Set the final financial report as a variable\nflow.setVariable('financial_report', financialReport);\n",
+      "next": "sendFinancialReport"
+    },
+    {
+      "id": "sendFinancialReport",
+      "type": "request",
+      "name": "Send Financial Report (Mock)",
+      "request": {
+        "url": "{{mock_server_url}}/notifications/financial",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"recipient\": \"user@example.com\",\n    \"subject\": \"Financial Planning Report for {{district}} - {{formatted_date}}\",\n    \"message\": \"Your daily financial report is ready. Exchange rate: 1 {{target_currency}} = {{conversion_rate}} {{base_currency}}. {{#if has_power_outage}}Scheduled power outages may impact operations.{{else}}No scheduled power outages today.{{/if}}\",\n    \"report_data\": {{financial_report}}\n}"
+        }
+      },
+      "next": "end"
+    },
+    {
+      "id": "end",
+      "type": "end",
+      "name": "End"
+    }
+  ],
+  "variable": [
+    {
+      "key": "mock_server_url",
+      "value": "https://mock.mygovresponse.com",
+      "type": "string"
+    },
+    {
+      "key": "yahoo_finance_api_url",
+      "value": "https://api.example.com/yahoofinance",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,272 @@
+{
+  "info": {
+    "name": "Weather Services",
+    "description": "Collection of weather-related APIs for the MyGov Response Hub",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Nepal Weather API",
+      "description": "Weather data for locations across Nepal in both English and Nepali",
+      "item": [
+        {
+          "name": "Get All Locations",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://nepal-weather-api.herokuapp.com/api/?place=all",
+              "protocol": "https",
+              "host": ["nepal-weather-api", "herokuapp", "com"],
+              "path": ["api", ""],
+              "query": [
+                {
+                  "key": "place",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Get weather data for all available locations in Nepal (English)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Locations (Nepali)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://nepal-weather-api.herokuapp.com/api/?placenp=all",
+              "protocol": "https",
+              "host": ["nepal-weather-api", "herokuapp", "com"],
+              "path": ["api", ""],
+              "query": [
+                {
+                  "key": "placenp",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Get weather data for all available locations in Nepal (Nepali)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Specific Location (English)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://nepal-weather-api.herokuapp.com/api/?place=kathmandu",
+              "protocol": "https",
+              "host": ["nepal-weather-api", "herokuapp", "com"],
+              "path": ["api", ""],
+              "query": [
+                {
+                  "key": "place",
+                  "value": "kathmandu"
+                }
+              ]
+            },
+            "description": "Get weather data for a specific location in Nepal (English)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Specific Location (Nepali)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://nepal-weather-api.herokuapp.com/api/?placenp=kathmandu",
+              "protocol": "https",
+              "host": ["nepal-weather-api", "herokuapp", "com"],
+              "path": ["api", ""],
+              "query": [
+                {
+                  "key": "placenp",
+                  "value": "kathmandu"
+                }
+              ]
+            },
+            "description": "Get weather data for a specific location in Nepal (Nepali)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "International Weather API (Fallback)",
+      "description": "Fallback weather APIs for when Nepal-specific data is unavailable",
+      "item": [
+        {
+          "name": "OpenWeatherMap - Current Weather",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://api.openweathermap.org/data/2.5/weather?q=Kathmandu,np&appid={{openweathermap_api_key}}&units=metric",
+              "protocol": "https",
+              "host": ["api", "openweathermap", "org"],
+              "path": ["data", "2.5", "weather"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Kathmandu,np"
+                },
+                {
+                  "key": "appid",
+                  "value": "{{openweathermap_api_key}}"
+                },
+                {
+                  "key": "units",
+                  "value": "metric"
+                }
+              ]
+            },
+            "description": "Get current weather for Kathmandu using OpenWeatherMap API"
+          },
+          "response": []
+        },
+        {
+          "name": "WeatherAPI.com - Current Weather",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://api.weatherapi.com/v1/current.json?key={{weatherapi_key}}&q=Kathmandu&aqi=no",
+              "protocol": "https",
+              "host": ["api", "weatherapi", "com"],
+              "path": ["v1", "current.json"],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{weatherapi_key}}"
+                },
+                {
+                  "key": "q",
+                  "value": "Kathmandu"
+                },
+                {
+                  "key": "aqi",
+                  "value": "no"
+                }
+              ]
+            },
+            "description": "Get current weather for Kathmandu using WeatherAPI.com"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Mock Weather Server",
+      "description": "Mock server for weather data when APIs are unavailable",
+      "item": [
+        {
+          "name": "Mock - Get All Locations",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{mock_server_url}}/weather/all",
+              "host": ["{{mock_server_url}}"],
+              "path": ["weather", "all"]
+            },
+            "description": "Get mock weather data for all locations"
+          },
+          "response": [
+            {
+              "name": "Mock Weather Data - All Locations",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{mock_server_url}}/weather/all",
+                  "host": ["{{mock_server_url}}"],
+                  "path": ["weather", "all"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"true\",\n  \"1\": {\n    \"status\": \"true\",\n    \"place\": \"Dadeldhura\",\n    \"max\": \"24.8 C\",\n    \"min\": \"16.0 C\",\n    \"rain\": \"0.0 mm\"\n  },\n  \"2\": {\n    \"status\": \"true\",\n    \"place\": \"Dipayal\",\n    \"max\": \"33.5 C\",\n    \"min\": \"23.0 C\",\n    \"rain\": \"5.2 mm\"\n  },\n  \"3\": {\n    \"status\": \"true\",\n    \"place\": \"Dhangadi\",\n    \"max\": \"32.2 C\",\n    \"min\": \"24.9 C\",\n    \"rain\": \"Traces\"\n  },\n  \"4\": {\n    \"status\": \"true\",\n    \"place\": \"Birendranagar\",\n    \"max\": \"31.9 C\",\n    \"min\": \"21.9 C\",\n    \"rain\": \"Traces\"\n  },\n  \"5\": {\n    \"status\": \"true\",\n    \"place\": \"Nepalgunj\",\n    \"max\": \"34.0 C\",\n    \"min\": \"25.0 C\",\n    \"rain\": \"0.0 mm\"\n  },\n  \"6\": {\n    \"status\": \"true\",\n    \"place\": \"Jumla\",\n    \"max\": \"27.3 C\",\n    \"min\": \"13.6 C\",\n    \"rain\": \"0.0 mm\"\n  },\n  \"7\": {\n    \"status\": \"true\",\n    \"place\": \"Dang\",\n    \"max\": \"31.8 C\",\n    \"min\": \"21.5 C\",\n    \"rain\": \"0.4 mm\"\n  },\n  \"8\": {\n    \"status\": \"true\",\n    \"place\": \"Pokhara\",\n    \"max\": \"30.2 C\",\n    \"min\": \"20.5 C\",\n    \"rain\": \"274.2 mm\"\n  },\n  \"9\": {\n    \"status\": \"true\",\n    \"place\": \"Bhairahawa\",\n    \"max\": \"34.0 C\",\n    \"min\": \"24.4 C\",\n    \"rain\": \"41.1 mm\"\n  },\n  \"10\": {\n    \"status\": \"true\",\n    \"place\": \"Simara\",\n    \"max\": \"33.5 C\",\n    \"min\": \"25.0 C\",\n    \"rain\": \"0.0 mm\"\n  },\n  \"11\": {\n    \"status\": \"true\",\n    \"place\": \"Kathmandu\",\n    \"max\": \"27.8 C\",\n    \"min\": \"18.4 C\",\n    \"rain\": \"16.6 mm\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Mock - Get Specific Location",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{mock_server_url}}/weather/location/:location",
+              "host": ["{{mock_server_url}}"],
+              "path": ["weather", "location", ":location"],
+              "variable": [
+                {
+                  "key": "location",
+                  "value": "kathmandu"
+                }
+              ]
+            },
+            "description": "Get mock weather data for a specific location"
+          },
+          "response": [
+            {
+              "name": "Mock Weather Data - Kathmandu",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{mock_server_url}}/weather/location/kathmandu",
+                  "host": ["{{mock_server_url}}"],
+                  "path": ["weather", "location", "kathmandu"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"true\",\n  \"place\": \"Kathmandu\",\n  \"max\": \"27.8 C\",\n  \"min\": \"18.4 C\",\n  \"rain\": \"16.6 mm\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "openweathermap_api_key",
+      "value": "your_api_key_here",
+      "type": "string"
+    },
+    {
+      "key": "weatherapi_key",
+      "value": "your_api_key_here",
+      "type": "string"
+    },
+    {
+      "key": "mock_server_url",
+      "value": "https://mock.mygovresponse.com",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+{
+  "info": {
+    "name": "Emergency Services",
+    "description": "Collection of emergency-related APIs for the MyGov Response Hub",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Mock Disaster Management",
+      "description": "Mock server for disaster management data as no direct APIs are available",
+      "item": [
+        {
+          "name": "Mock - Alert Notifications",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{mock_server_url}}/emergency/alerts?district=kathmandu",
+              "host": ["{{mock_server_url}}"],
+              "path": ["emergency", "alerts"],
+              "query": [
+                {
+                  "key": "district",
+                  "value": "kathmandu"
+                }
+              ]
+            },
+            "description": "Get current emergency alerts for a specific district"
+          },
+          "response": [
+            {
+              "name": "Mock Emergency Alerts - Kathmandu",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{mock_server_url}}/emergency/alerts?district=kathmandu",
+                  "host": ["{{mock_server_url}}"],
+                  "path": ["emergency", "alerts"],
+                  "query": [
+                    {
+                      "key": "district",
+                      "value": "kathmandu"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"district\": \"Kathmandu\",\n  \"source\": \"Nepal Disaster Risk Reduction and Management Authority (Mock)\",\n  \"alerts\": [\n    {\n      \"id\": \"ALERT-KTM-001\",\n      \"type\": \"Weather\",\n      \"severity\": \"Moderate\",\n      \"title\": \"Heavy Rainfall Warning\",\n      \"description\": \"Heavy rainfall expected in Kathmandu Valley over the next 24 hours. Possible flash floods in low-lying areas.\",\n      \"issued_at\": \"2023-04-17T08:00:00Z\",\n      \"valid_until\": \"2023-04-18T08:00:00Z\",\n      \"affected_areas\": [\"Kathmandu Valley\", \"Lalitpur\", \"Bhaktapur\"],\n      \"instructions\": \"Stay indoors if possible. Avoid flood-prone areas. Keep emergency supplies ready.\",\n      \"contact\": {\n        \"phone\": \"1155\",\n        \"email\": \"emergency@ndrrma.gov.np\"\n      }\n    },\n    {\n      \"id\": \"ALERT-KTM-002\",\n      \"type\": \"Infrastructure\",\n      \"severity\": \"Low\",\n      \"title\": \"Bridge Maintenance Notice\",\n      \"description\": \"Temporary closure of Bagmati Bridge at Thapathali for maintenance. Please use alternative routes.\",\n      \"issued_at\": \"2023-04-16T14:30:00Z\",\n      \"valid_until\": \"2023-04-19T18:00:00Z\",\n      \"affected_areas\": [\"Thapathali\", \"Teku\"],\n      \"instructions\": \"Use Tinkune-Maitighar route as an alternative.\",\n      \"contact\": {\n        \"phone\": \"01-4211700\",\n        \"email\": \"info@dor.gov.np\"\n      }\n    }\n  ],\n  \"last_updated\": \"2023-04-17T10:45:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Mock - Emergency Contacts",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{mock_server_url}}/emergency/contacts?district=kathmandu",
+              "host": ["{{mock_server_url}}"],
+              "path": ["emergency", "contacts"],
+              "query": [
+                {
+                  "key": "district",
+                  "value": "kathmandu"
+                }
+              ]
+            },
+            "description": "Get emergency contact information for a specific district"
+          },
+          "response": [
+            {
+              "name": "Mock Emergency Contacts - Kathmandu",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{mock_server_url}}/emergency/contacts?district=kathmandu",
+                  "host": ["{{mock_server_url}}"],
+                  "path": ["emergency", "contacts"],
+                  "query": [
+                    {
+                      "key": "district",
+                      "value": "kathmandu"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"district\": \"Kathmandu\",\n  \"source\": \"Nepal Disaster Risk Reduction and Management Authority (Mock)\",\n  \"emergency_contacts\": [\n    {\n      \"category\": \"Police\",\n      \"name\": \"Nepal Police Emergency\",\n      \"phone\": \"100\",\n      \"alt_phone\": \"01-4261945\",\n      \"email\": \"info@nepalpolice.gov.np\",\n      \"website\": \"https://www.nepalpolice.gov.np\",\n      \"address\": \"Police Headquarters, Naxal, Kathmandu\",\n      \"hours\": \"24/7\"\n    },\n    {\n      \"category\": \"Fire\",\n      \"name\": \"Kathmandu Fire Brigade\",\n      \"phone\": \"101\",\n      \"alt_phone\": \"01-4258333\",\n      \"email\": \"fire@kathmandu.gov.np\",\n      \"website\": null,\n      \"address\": \"Basantapur, Kathmandu\",\n      \"hours\": \"24/7\"\n    },\n    {\n      \"category\": \"Ambulance\",\n      \"name\": \"Nepal Ambulance Service\",\n      \"phone\": \"102\",\n      \"alt_phone\": \"01-4228094\",\n      \"email\": \"info@nepalambulance.org\",\n      \"website\": \"https://www.nepalambulance.org\",\n      \"address\": \"Maharajgunj, Kathmandu\",\n      \"hours\": \"24/7\"\n    },\n    {\n      \"category\": \"Hospital\",\n      \"name\": \"Tribhuvan University Teaching Hospital\",\n      \"phone\": \"01-4412505\",\n      \"alt_phone\": \"01-4412303\",\n      \"email\": \"info@tuth.org.np\",\n      \"website\": \"https://www.iom.edu.np\",\n      \"address\": \"Maharajgunj, Kathmandu\",\n      \"hours\": \"24/7\"\n    },\n    {\n      \"category\": \"Disaster Management\",\n      \"name\": \"National Emergency Operation Center\",\n      \"phone\": \"1155\",\n      \"alt_phone\": \"01-4200105\",\n      \"email\": \"neoc@moha.gov.np\",\n      \"website\": \"http://neoc.gov.np\",\n      \"address\": \"Singha Durbar, Kathmandu\",\n      \"hours\": \"24/7\"\n    }\n  ],\n  \"last_updated\": \"2023-04-15T12:00:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Mock - Safety Guidelines",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{mock_server_url}}/emergency/guidelines?type=earthquake",
+              "host": ["{{mock_server_url}}"],
+              "path": ["emergency", "guidelines"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "earthquake"
+                }
+              ]
+            },
+            "description": "Get safety guidelines for a specific type of emergency"
+          },
+          "response": [
+            {
+              "name": "Mock Safety Guidelines - Earthquake",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{mock_server_url}}/emergency/guidelines?type=earthquake",
+                  "host": ["{{mock_server_url}}"],
+                  "path": ["emergency", "guidelines"],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "earthquake"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"earthquake\",\n  \"source\": \"Nepal Disaster Risk Reduction and Management Authority (Mock)\",\n  \"title\": \"Earthquake Safety Guidelines\",\n  \"last_updated\": \"2023-03-10\",\n  \"guidelines\": {\n    \"before\": [\n      {\n        \"title\": \"Prepare an Emergency Kit\",\n        \"description\": \"Include water, non-perishable food, first aid supplies, flashlight, batteries, radio, and essential medications.\"\n      },\n      {\n        \"title\": \"Create a Family Emergency Plan\",\n        \"description\": \"Identify safe spots in each room, practice drop, cover, and hold on, and establish meeting points.\"\n      },\n      {\n        \"title\": \"Secure Heavy Items\",\n        \"description\": \"Anchor furniture, water heaters, and heavy appliances to walls. Secure hanging objects.\"\n      },\n      {\n        \"title\": \"Know Utility Shutoffs\",\n        \"description\": \"Learn how to turn off gas, water, and electricity in case of emergency.\"\n      },\n      {\n        \"title\": \"Reinforce Your Home\",\n        \"description\": \"Consider structural improvements to make your home more earthquake-resistant.\"\n      }\n    ],\n    \"during\": [\n      {\n        \"title\": \"Drop, Cover, and Hold On\",\n        \"description\": \"Drop to the ground, take cover under a sturdy table or desk, and hold on until the shaking stops.\"\n      },\n      {\n        \"title\": \"Stay Indoors\",\n        \"description\": \"If you're inside, stay there. Most injuries occur when people try to move to a different location or go outside.\"\n      },\n      {\n        \"title\": \"If Outdoors\",\n        \"description\": \"Move to an open area away from buildings, trees, streetlights, and utility wires.\"\n      },\n      {\n        \"title\": \"If in a Vehicle\",\n        \"description\": \"Pull over to a safe place away from buildings, bridges, and overpasses. Stay inside the vehicle.\"\n      }\n    ],\n    \"after\": [\n      {\n        \"title\": \"Check for Injuries\",\n        \"description\": \"Provide first aid for anyone who needs it. Don't move seriously injured people unless they're in immediate danger.\"\n      },\n      {\n        \"title\": \"Check for Hazards\",\n        \"description\": \"Look for fire hazards, gas leaks, damaged electrical wiring, and structural damage.\"\n      },\n      {\n        \"title\": \"Listen to Authorities\",\n        \"description\": \"Use a battery-powered radio to listen for emergency information and instructions.\"\n      },\n      {\n        \"title\": \"Be Prepared for Aftershocks\",\n        \"description\": \"These secondary shockwaves are usually less violent but can cause additional damage.\"\n      },\n      {\n        \"title\": \"Stay Out of Damaged Buildings\",\n        \"description\": \"Return home only when authorities say it's safe.\"\n      }\n    ]\n  },\n  \"emergency_contacts\": [\n    {\n      \"name\": \"National Emergency Operation Center\",\n      \"phone\": \"1155\"\n    },\n    {\n      \"name\": \"Nepal Police\",\n      \"phone\": \"100\"\n    },\n    {\n      \"name\": \"Nepal Ambulance Service\",\n      \"phone\": \"102\"\n    }\n  ],\n  \"resources\": [\n    {\n      \"title\": \"Earthquake Preparedness Guide\",\n      \"url\": \"https://www.ndrrma.gov.np/resources/earthquake-guide\"\n    },\n    {\n      \"title\": \"Nepal Seismological Center\",\n      \"url\": \"http://www.seismonepal.gov.np\"\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "mock_server_url",
+      "value": "https://mock.mygovresponse.com",
+      "type": "string"
+    }
+  ]
+}

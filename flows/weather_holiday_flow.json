@@ -1,0 +1,182 @@
+{
+  "info": {
+    "name": "Weather Alert & Holiday Planning Flow",
+    "description": "Postman Flow that combines weather forecasts with holiday information and potential power outage alerts",
+    "schema": "https://schema.getpostman.com/json/flow/v1.0.0/collection.json"
+  },
+  "flow": [
+    {
+      "id": "start",
+      "type": "start",
+      "name": "Start",
+      "next": "getLocation"
+    },
+    {
+      "id": "getLocation",
+      "type": "set-variables",
+      "name": "Set Location Variables",
+      "variables": [
+        {
+          "key": "location",
+          "value": "Kathmandu"
+        },
+        {
+          "key": "district",
+          "value": "kathmandu"
+        },
+        {
+          "key": "date",
+          "value": "{{$isoTimestamp}}"
+        }
+      ],
+      "next": "getCurrentDate"
+    },
+    {
+      "id": "getCurrentDate",
+      "type": "script",
+      "name": "Calculate Dates",
+      "script": "// Get current date in ISO format\nconst now = new Date();\n\n// Format current date as YYYY-MM-DD\nconst year = now.getFullYear();\nconst month = now.getMonth() + 1; // JavaScript months are 0-based\nconst day = now.getDate();\n\n// Set variables for different date formats\nflow.setVariable('current_date_iso', `${year}-${month}-${day}`);\nflow.setVariable('current_year', year);\nflow.setVariable('current_month', month);\nflow.setVariable('current_day', day);\n\n// Calculate tomorrow's date\nconst tomorrow = new Date(now);\ntomorrow.setDate(tomorrow.getDate() + 1);\nconst tomorrowYear = tomorrow.getFullYear();\nconst tomorrowMonth = tomorrow.getMonth() + 1;\nconst tomorrowDay = tomorrow.getDate();\nflow.setVariable('tomorrow_date_iso', `${tomorrowYear}-${tomorrowMonth}-${tomorrowDay}`);\n\n// Calculate date 7 days from now for weekly forecast\nconst nextWeek = new Date(now);\nnextWeek.setDate(nextWeek.getDate() + 7);\nconst nextWeekYear = nextWeek.getFullYear();\nconst nextWeekMonth = nextWeek.getMonth() + 1;\nconst nextWeekDay = nextWeek.getDate();\nflow.setVariable('next_week_date_iso', `${nextWeekYear}-${nextWeekMonth}-${nextWeekDay}`);\n\n// Format date for display\nflow.setVariable('formatted_date', `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);\n",
+      "next": "getWeatherData"
+    },
+    {
+      "id": "getWeatherData",
+      "type": "request",
+      "name": "Get Weather Data",
+      "request": {
+        "url": "https://nepal-weather-api.herokuapp.com/api/?place={{location}}",
+        "method": "GET"
+      },
+      "next": "checkWeatherResponse"
+    },
+    {
+      "id": "checkWeatherResponse",
+      "type": "switch",
+      "name": "Check Weather Response",
+      "conditions": [
+        {
+          "condition": "response.status === 200",
+          "next": "processWeatherData"
+        },
+        {
+          "condition": "true",
+          "next": "handleWeatherError"
+        }
+      ]
+    },
+    {
+      "id": "handleWeatherError",
+      "type": "request",
+      "name": "Get Mock Weather Data",
+      "request": {
+        "url": "{{mock_server_url}}/weather/{{location}}",
+        "method": "GET"
+      },
+      "next": "processWeatherData"
+    },
+    {
+      "id": "processWeatherData",
+      "type": "script",
+      "name": "Process Weather Data",
+      "script": "// Extract weather data from response\nconst weatherData = response.body;\n\n// Check if we have valid weather data\nif (weatherData && weatherData.status === 'true') {\n    // Extract temperature and rain data\n    flow.setVariable('max_temp', weatherData.max || 'N/A');\n    flow.setVariable('min_temp', weatherData.min || 'N/A');\n    flow.setVariable('rain', weatherData.rain || 'N/A');\n    \n    // Determine weather condition based on rain data\n    let weatherCondition = 'Clear';\n    if (weatherData.rain && weatherData.rain.includes('mm')) {\n        const rainAmount = parseFloat(weatherData.rain);\n        if (rainAmount > 10) {\n            weatherCondition = 'Heavy Rain';\n        } else if (rainAmount > 0) {\n            weatherCondition = 'Light Rain';\n        }\n    }\n    flow.setVariable('weather_condition', weatherCondition);\n    \n    // Set weather alert flag based on conditions\n    const maxTemp = weatherData.max ? parseFloat(weatherData.max) : 0;\n    const rainAmount = weatherData.rain ? parseFloat(weatherData.rain) : 0;\n    \n    let weatherAlert = false;\n    if (maxTemp > 35 || rainAmount > 20) {\n        weatherAlert = true;\n    }\n    flow.setVariable('weather_alert', weatherAlert);\n} else {\n    // Set default values if weather data is not available\n    flow.setVariable('max_temp', 'N/A');\n    flow.setVariable('min_temp', 'N/A');\n    flow.setVariable('rain', 'N/A');\n    flow.setVariable('weather_condition', 'Unknown');\n    flow.setVariable('weather_alert', false);\n}\n",
+      "next": "getHolidayData"
+    },
+    {
+      "id": "getHolidayData",
+      "type": "request",
+      "name": "Get Holiday Data",
+      "request": {
+        "url": "https://npclapi.casualsnek.eu.org/v2/date/ad/{{current_year}}-{{current_month}}-{{current_day}}",
+        "method": "GET"
+      },
+      "next": "checkHolidayResponse"
+    },
+    {
+      "id": "checkHolidayResponse",
+      "type": "switch",
+      "name": "Check Holiday Response",
+      "conditions": [
+        {
+          "condition": "response.status === 200",
+          "next": "processHolidayData"
+        },
+        {
+          "condition": "true",
+          "next": "handleHolidayError"
+        }
+      ]
+    },
+    {
+      "id": "handleHolidayError",
+      "type": "request",
+      "name": "Get Mock Holiday Data",
+      "request": {
+        "url": "{{mock_server_url}}/holidays/ad/{{current_year}}-{{current_month}}-{{current_day}}",
+        "method": "GET"
+      },
+      "next": "processHolidayData"
+    },
+    {
+      "id": "processHolidayData",
+      "type": "script",
+      "name": "Process Holiday Data",
+      "script": "// Extract holiday data from response\nconst holidayData = response.body;\n\n// Initialize variables\nlet isHoliday = false;\nlet holidayName = '';\nlet holidayEvents = [];\n\n// Check if we have valid holiday data\nif (holidayData && holidayData[flow.variables.current_year]) {\n    const yearData = holidayData[flow.variables.current_year];\n    if (yearData[flow.variables.current_month]) {\n        const monthData = yearData[flow.variables.current_month];\n        if (monthData[flow.variables.current_day]) {\n            const dayData = monthData[flow.variables.current_day];\n            \n            // Check if it's a public holiday\n            isHoliday = dayData.public_holiday || false;\n            \n            // Get event information\n            if (dayData.event && dayData.event.length > 0) {\n                holidayEvents = dayData.event;\n                holidayName = dayData.event[0]; // Use first event as the holiday name\n            }\n        }\n    }\n}\n\n// Set variables for use in later steps\nflow.setVariable('is_holiday', isHoliday);\nflow.setVariable('holiday_name', holidayName);\nflow.setVariable('holiday_events', holidayEvents);\n",
+      "next": "getPowerOutageData"
+    },
+    {
+      "id": "getPowerOutageData",
+      "type": "request",
+      "name": "Get Power Outage Data",
+      "request": {
+        "url": "{{mock_server_url}}/utility/electricity/powercuts?district={{district}}&date={{formatted_date}}",
+        "method": "GET"
+      },
+      "next": "processPowerOutageData"
+    },
+    {
+      "id": "processPowerOutageData",
+      "type": "script",
+      "name": "Process Power Outage Data",
+      "script": "// Extract power outage data from response\nconst powerOutageData = response.body;\n\n// Initialize variables\nlet hasPowerOutage = false;\nlet powerOutageAreas = [];\nlet powerOutageTimes = [];\n\n// Check if we have valid power outage data\nif (powerOutageData && powerOutageData.scheduled_power_cuts && powerOutageData.scheduled_power_cuts.length > 0) {\n    hasPowerOutage = true;\n    \n    // Extract areas and times affected by power outages\n    powerOutageData.scheduled_power_cuts.forEach(outage => {\n        powerOutageAreas.push(outage.area);\n        powerOutageTimes.push(`${outage.start_time} - ${outage.end_time}`);\n    });\n}\n\n// Set variables for use in later steps\nflow.setVariable('has_power_outage', hasPowerOutage);\nflow.setVariable('power_outage_areas', powerOutageAreas);\nflow.setVariable('power_outage_times', powerOutageTimes);\n",
+      "next": "generateReport"
+    },
+    {
+      "id": "generateReport",
+      "type": "script",
+      "name": "Generate Integrated Report",
+      "script": "// Generate an integrated report combining weather, holiday, and power outage information\nlet report = {\n    date: flow.variables.formatted_date,\n    location: flow.variables.location,\n    weather: {\n        max_temperature: flow.variables.max_temp,\n        min_temperature: flow.variables.min_temp,\n        rainfall: flow.variables.rain,\n        condition: flow.variables.weather_condition,\n        alert: flow.variables.weather_alert\n    },\n    holiday: {\n        is_holiday: flow.variables.is_holiday,\n        name: flow.variables.holiday_name,\n        events: flow.variables.holiday_events\n    },\n    power_outage: {\n        scheduled_outage: flow.variables.has_power_outage,\n        affected_areas: flow.variables.power_outage_areas,\n        outage_times: flow.variables.power_outage_times\n    },\n    recommendations: []\n};\n\n// Generate recommendations based on the integrated data\nlet recommendations = [];\n\n// Weather-based recommendations\nif (flow.variables.weather_condition === 'Heavy Rain') {\n    recommendations.push('Carry an umbrella and avoid flood-prone areas');\n    if (flow.variables.has_power_outage) {\n        recommendations.push('Prepare for potential power disruptions due to heavy rainfall');\n    }\n} else if (flow.variables.weather_condition === 'Light Rain') {\n    recommendations.push('Light rainfall expected, carry rain protection');\n}\n\n// Holiday-based recommendations\nif (flow.variables.is_holiday) {\n    recommendations.push(`Today is ${flow.variables.holiday_name}. Expect government offices and some businesses to be closed`);\n    recommendations.push('Expect increased traffic and crowds in public areas');\n}\n\n// Power outage recommendations\nif (flow.variables.has_power_outage) {\n    recommendations.push('Scheduled power outages today. Charge devices in advance');\n    recommendations.push('Plan activities around the outage schedule');\n}\n\n// Combined recommendations\nif (flow.variables.is_holiday && flow.variables.weather_condition !== 'Clear') {\n    recommendations.push('Holiday activities may be affected by weather conditions');\n}\n\n// Add recommendations to the report\nreport.recommendations = recommendations;\n\n// Set the final report as a variable\nflow.setVariable('integrated_report', report);\n",
+      "next": "sendNotification"
+    },
+    {
+      "id": "sendNotification",
+      "type": "request",
+      "name": "Send Notification (Mock)",
+      "request": {
+        "url": "{{mock_server_url}}/notifications/send",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"recipient\": \"user@example.com\",\n    \"subject\": \"Daily Weather, Holiday, and Power Status Update for {{location}}\",\n    \"message\": \"Weather: {{weather_condition}} ({{min_temp}} - {{max_temp}}), {{#if is_holiday}}Today is a holiday: {{holiday_name}}{{else}}No holiday today{{/if}}, {{#if has_power_outage}}Scheduled power outages in some areas{{else}}No scheduled power outages{{/if}}\",\n    \"report\": {{integrated_report}}\n}"
+        }
+      },
+      "next": "end"
+    },
+    {
+      "id": "end",
+      "type": "end",
+      "name": "End"
+    }
+  ],
+  "variable": [
+    {
+      "key": "mock_server_url",
+      "value": "https://mock.mygovresponse.com",
+      "type": "string"
+    }
+  ]
+}

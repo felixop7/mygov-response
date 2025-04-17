@@ -1,0 +1,213 @@
+{
+  "info": {
+    "name": "Holiday API Monitor",
+    "description": "Monitor for checking the health of holiday and calendar APIs in the MyGov Response Hub",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Monitor Nepal Events API",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Test for successful response",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Test for response time",
+              "pm.test(\"Response time is acceptable\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+              "});",
+              "",
+              "// Test for JSON content type",
+              "pm.test(\"Content-Type is JSON\", function () {",
+              "    pm.response.to.have.header(\"Content-Type\");",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "// Test for valid JSON response",
+              "pm.test(\"Response is valid JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an('object');",
+              "});",
+              "",
+              "// Get current date for dynamic testing",
+              "const now = new Date();",
+              "const year = now.getFullYear();",
+              "const month = now.getMonth() + 1; // JavaScript months are 0-based",
+              "const day = now.getDate();",
+              "",
+              "// Test for year data in response",
+              "pm.test(\"Response contains year data\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(year.toString());",
+              "});",
+              "",
+              "// Test for month data in response",
+              "pm.test(\"Response contains month data\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData[year.toString()]).to.have.property(month.toString());",
+              "});",
+              "",
+              "// Test for day data in response",
+              "pm.test(\"Response contains day data\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData[year.toString()][month.toString()]).to.have.property(day.toString());",
+              "});",
+              "",
+              "// Send monitor results to a notification endpoint (mock)",
+              "if (pm.response.code !== 200) {",
+              "    pm.sendRequest({",
+              "        url: pm.variables.get(\"monitor_notification_url\"),",
+              "        method: 'POST',",
+              "        header: {",
+              "            'Content-Type': 'application/json'",
+              "        },",
+              "        body: {",
+              "            mode: 'raw',",
+              "            raw: JSON.stringify({",
+              "                monitor: 'Holiday API Monitor',",
+              "                status: 'Failed',",
+              "                endpoint: 'Nepal Events API',",
+              "                error: 'API returned status code ' + pm.response.code,",
+              "                timestamp: new Date().toISOString()",
+              "            })",
+              "        }",
+              "    });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "https://npclapi.casualsnek.eu.org/v2/date/ad/{{$isoTimestamp}}",
+          "protocol": "https",
+          "host": ["npclapi", "casualsnek", "eu", "org"],
+          "path": ["v2", "date", "ad", "{{$isoTimestamp}}"]
+        }
+      }
+    },
+    {
+      "name": "Monitor Mock Holiday API (Fallback)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Test for successful response",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Test for JSON content type",
+              "pm.test(\"Content-Type is JSON\", function () {",
+              "    pm.response.to.have.header(\"Content-Type\");",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "// Test for valid JSON response",
+              "pm.test(\"Response is valid JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an('object');",
+              "});",
+              "",
+              "// Get current date for dynamic testing",
+              "const now = new Date();",
+              "const year = now.getFullYear();",
+              "",
+              "// Test for year data in response",
+              "pm.test(\"Response contains year data\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(year.toString());",
+              "});",
+              "",
+              "// Send monitor results to a notification endpoint (mock)",
+              "if (pm.response.code !== 200) {",
+              "    pm.sendRequest({",
+              "        url: pm.variables.get(\"monitor_notification_url\"),",
+              "        method: 'POST',",
+              "        header: {",
+              "            'Content-Type': 'application/json'",
+              "        },",
+              "        body: {",
+              "            mode: 'raw',",
+              "            raw: JSON.stringify({",
+              "                monitor: 'Holiday API Monitor',",
+              "                status: 'Failed',",
+              "                endpoint: 'Mock Holiday API',",
+              "                error: 'API returned status code ' + pm.response.code,",
+              "                timestamp: new Date().toISOString()",
+              "            })",
+              "        }",
+              "    });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{mock_server_url}}/holidays/ad/{{$year}}",
+          "host": ["{{mock_server_url}}"],
+          "path": ["holidays", "ad", "{{$year}}"]
+        }
+      }
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Set timestamp for monitoring",
+          "pm.variables.set('monitor_timestamp', new Date().toISOString());",
+          "",
+          "// Get current date components for dynamic testing",
+          "const now = new Date();",
+          "pm.variables.set('year', now.getFullYear());",
+          "pm.variables.set('month', now.getMonth() + 1);",
+          "pm.variables.set('day', now.getDate());",
+          "",
+          "// Format date for API call",
+          "pm.variables.set('isoTimestamp', `${pm.variables.get('year')}-${pm.variables.get('month')}-${pm.variables.get('day')}`);",
+          "",
+          "// Log monitor execution",
+          "console.log('Executing Holiday API Monitor at ' + pm.variables.get('monitor_timestamp'));"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global test script for the monitor collection",
+          "console.log('Completed Holiday API Monitor tests at ' + new Date().toISOString());"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "mock_server_url",
+      "value": "https://mock.mygovresponse.com",
+      "type": "string"
+    },
+    {
+      "key": "monitor_notification_url",
+      "value": "https://mock.mygovresponse.com/monitor/notifications",
+      "type": "string"
+    }
+  ]
+}

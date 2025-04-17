@@ -1,0 +1,386 @@
+{
+  "info": {
+    "name": "Financial & Utility API Monitor",
+    "description": "Monitor for checking the health of financial and utility APIs in the MyGov Response Hub",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Monitor Nepal Rastra Bank Forex API",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Test for successful response",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Test for response time",
+              "pm.test(\"Response time is acceptable\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+              "});",
+              "",
+              "// Test for JSON content type",
+              "pm.test(\"Content-Type is JSON\", function () {",
+              "    pm.response.to.have.header(\"Content-Type\");",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "// Test for valid JSON response",
+              "pm.test(\"Response is valid JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an('object');",
+              "});",
+              "",
+              "// Test for rates object in response",
+              "pm.test(\"Response contains rates object\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('rates');",
+              "    pm.expect(jsonData.rates).to.be.an('object');",
+              "});",
+              "",
+              "// Test for USD currency in rates",
+              "pm.test(\"Response contains USD currency\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.rates).to.have.property('USD');",
+              "    pm.expect(jsonData.rates.USD).to.have.property('buy');",
+              "    pm.expect(jsonData.rates.USD).to.have.property('sell');",
+              "});",
+              "",
+              "// Send monitor results to a notification endpoint (mock)",
+              "if (pm.response.code !== 200) {",
+              "    pm.sendRequest({",
+              "        url: pm.variables.get(\"monitor_notification_url\"),",
+              "        method: 'POST',",
+              "        header: {",
+              "            'Content-Type': 'application/json'",
+              "        },",
+              "        body: {",
+              "            mode: 'raw',",
+              "            raw: JSON.stringify({",
+              "                monitor: 'Financial & Utility API Monitor',",
+              "                status: 'Failed',",
+              "                endpoint: 'Nepal Rastra Bank Forex API',",
+              "                error: 'API returned status code ' + pm.response.code,",
+              "                timestamp: new Date().toISOString()",
+              "            })",
+              "        }",
+              "    });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{mock_server_url}}/finance/forex/latest",
+          "host": ["{{mock_server_url}}"],
+          "path": ["finance", "forex", "latest"]
+        }
+      }
+    },
+    {
+      "name": "Monitor Stock Market API",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Test for successful response",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Test for JSON content type",
+              "pm.test(\"Content-Type is JSON\", function () {",
+              "    pm.response.to.have.header(\"Content-Type\");",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "// Test for valid JSON response",
+              "pm.test(\"Response is valid JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an('object');",
+              "});",
+              "",
+              "// Test for chart object in response",
+              "pm.test(\"Response contains chart object\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('chart');",
+              "});",
+              "",
+              "// Test for result array in chart object",
+              "pm.test(\"Chart contains result array\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.chart).to.have.property('result');",
+              "    pm.expect(jsonData.chart.result).to.be.an('array');",
+              "});",
+              "",
+              "// Send monitor results to a notification endpoint (mock)",
+              "if (pm.response.code !== 200) {",
+              "    pm.sendRequest({",
+              "        url: pm.variables.get(\"monitor_notification_url\"),",
+              "        method: 'POST',",
+              "        header: {",
+              "            'Content-Type': 'application/json'",
+              "        },",
+              "        body: {",
+              "            mode: 'raw',",
+              "            raw: JSON.stringify({",
+              "                monitor: 'Financial & Utility API Monitor',",
+              "                status: 'Failed',",
+              "                endpoint: 'Stock Market API',",
+              "                error: 'API returned status code ' + pm.response.code,",
+              "                timestamp: new Date().toISOString()",
+              "            })",
+              "        }",
+              "    });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{yahoo_finance_api_url}}/get_stock_chart?symbol=AAPL&interval=1d&range=1mo",
+          "host": ["{{yahoo_finance_api_url}}"],
+          "path": ["get_stock_chart"],
+          "query": [
+            {
+              "key": "symbol",
+              "value": "AAPL"
+            },
+            {
+              "key": "interval",
+              "value": "1d"
+            },
+            {
+              "key": "range",
+              "value": "1mo"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Monitor Utility Electricity Status API",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Test for successful response",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Test for JSON content type",
+              "pm.test(\"Content-Type is JSON\", function () {",
+              "    pm.response.to.have.header(\"Content-Type\");",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "// Test for valid JSON response",
+              "pm.test(\"Response is valid JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an('object');",
+              "});",
+              "",
+              "// Test for basic structure",
+              "pm.test(\"Response has correct structure\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('overall_status');",
+              "    pm.expect(jsonData).to.have.property('areas');",
+              "    pm.expect(jsonData).to.have.property('last_updated');",
+              "});",
+              "",
+              "// Test for areas array",
+              "pm.test(\"Response contains areas array\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.areas).to.be.an('array');",
+              "});",
+              "",
+              "// Send monitor results to a notification endpoint (mock)",
+              "if (pm.response.code !== 200) {",
+              "    pm.sendRequest({",
+              "        url: pm.variables.get(\"monitor_notification_url\"),",
+              "        method: 'POST',",
+              "        header: {",
+              "            'Content-Type': 'application/json'",
+              "        },",
+              "        body: {",
+              "            mode: 'raw',",
+              "            raw: JSON.stringify({",
+              "                monitor: 'Financial & Utility API Monitor',",
+              "                status: 'Failed',",
+              "                endpoint: 'Utility Electricity Status API',",
+              "                error: 'API returned status code ' + pm.response.code,",
+              "                timestamp: new Date().toISOString()",
+              "            })",
+              "        }",
+              "    });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{mock_server_url}}/utility/electricity/status?district=kathmandu",
+          "host": ["{{mock_server_url}}"],
+          "path": ["utility", "electricity", "status"],
+          "query": [
+            {
+              "key": "district",
+              "value": "kathmandu"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Monitor Power Outage API",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Test for successful response",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Test for JSON content type",
+              "pm.test(\"Content-Type is JSON\", function () {",
+              "    pm.response.to.have.header(\"Content-Type\");",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "// Test for valid JSON response",
+              "pm.test(\"Response is valid JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an('object');",
+              "});",
+              "",
+              "// Test for basic structure",
+              "pm.test(\"Response has correct structure\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('district');",
+              "    pm.expect(jsonData).to.have.property('date');",
+              "    pm.expect(jsonData).to.have.property('scheduled_power_cuts');",
+              "    pm.expect(jsonData).to.have.property('last_updated');",
+              "});",
+              "",
+              "// Test for scheduled_power_cuts array",
+              "pm.test(\"Response contains scheduled_power_cuts array\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.scheduled_power_cuts).to.be.an('array');",
+              "});",
+              "",
+              "// Send monitor results to a notification endpoint (mock)",
+              "if (pm.response.code !== 200) {",
+              "    pm.sendRequest({",
+              "        url: pm.variables.get(\"monitor_notification_url\"),",
+              "        method: 'POST',",
+              "        header: {",
+              "            'Content-Type': 'application/json'",
+              "        },",
+              "        body: {",
+              "            mode: 'raw',",
+              "            raw: JSON.stringify({",
+              "                monitor: 'Financial & Utility API Monitor',",
+              "                status: 'Failed',",
+              "                endpoint: 'Power Outage API',",
+              "                error: 'API returned status code ' + pm.response.code,",
+              "                timestamp: new Date().toISOString()",
+              "            })",
+              "        }",
+              "    });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{mock_server_url}}/utility/electricity/powercuts?district=kathmandu&date={{$isoTimestamp}}",
+          "host": ["{{mock_server_url}}"],
+          "path": ["utility", "electricity", "powercuts"],
+          "query": [
+            {
+              "key": "district",
+              "value": "kathmandu"
+            },
+            {
+              "key": "date",
+              "value": "{{$isoTimestamp}}"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Set timestamp for monitoring",
+          "pm.variables.set('monitor_timestamp', new Date().toISOString());",
+          "",
+          "// Format date for API call",
+          "const now = new Date();",
+          "const year = now.getFullYear();",
+          "const month = (now.getMonth() + 1).toString().padStart(2, '0');",
+          "const day = now.getDate().toString().padStart(2, '0');",
+          "pm.variables.set('isoTimestamp', `${year}-${month}-${day}`);",
+          "",
+          "// Log monitor execution",
+          "console.log('Executing Financial & Utility API Monitor at ' + pm.variables.get('monitor_timestamp'));"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global test script for the monitor collection",
+          "console.log('Completed Financial & Utility API Monitor tests at ' + new Date().toISOString());"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "mock_server_url",
+      "value": "https://mock.mygovresponse.com",
+      "type": "string"
+    },
+    {
+      "key": "yahoo_finance_api_url",
+      "value": "https://api.example.com/yahoofinance",
+      "type": "string"
+    },
+    {
+      "key": "monitor_notification_url",
+      "value": "https://mock.mygovresponse.com/monitor/notifications",
+      "type": "string"
+    }
+  ]
+}

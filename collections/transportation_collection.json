@@ -1,0 +1,283 @@
+{
+  "info": {
+    "name": "Transportation & Maps",
+    "description": "Collection of transportation and map-related APIs for the MyGov Response Hub",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Baato Maps API",
+      "description": "Nepal-specific maps and transportation API",
+      "item": [
+        {
+          "name": "Search",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://api.baato.io/api/v1/search?key={{baato_api_key}}&q=Kathmandu&limit=10",
+              "protocol": "https",
+              "host": ["api", "baato", "io"],
+              "path": ["api", "v1", "search"],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{baato_api_key}}"
+                },
+                {
+                  "key": "q",
+                  "value": "Kathmandu"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Search for locations in Nepal by keyword"
+          },
+          "response": []
+        },
+        {
+          "name": "Reverse Search",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://api.baato.io/api/v1/reverse?key={{baato_api_key}}&lat=27.7172&lon=85.3240",
+              "protocol": "https",
+              "host": ["api", "baato", "io"],
+              "path": ["api", "v1", "reverse"],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{baato_api_key}}"
+                },
+                {
+                  "key": "lat",
+                  "value": "27.7172"
+                },
+                {
+                  "key": "lon",
+                  "value": "85.3240"
+                }
+              ]
+            },
+            "description": "Get location information from coordinates"
+          },
+          "response": []
+        },
+        {
+          "name": "Places",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://api.baato.io/api/v1/places?key={{baato_api_key}}&placeId=123",
+              "protocol": "https",
+              "host": ["api", "baato", "io"],
+              "path": ["api", "v1", "places"],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{baato_api_key}}"
+                },
+                {
+                  "key": "placeId",
+                  "value": "123"
+                }
+              ]
+            },
+            "description": "Get detailed information about a specific place"
+          },
+          "response": []
+        },
+        {
+          "name": "Nearby Places",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://api.baato.io/api/v1/nearby?key={{baato_api_key}}&lat=27.7172&lon=85.3240&type=restaurant&limit=10",
+              "protocol": "https",
+              "host": ["api", "baato", "io"],
+              "path": ["api", "v1", "nearby"],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{baato_api_key}}"
+                },
+                {
+                  "key": "lat",
+                  "value": "27.7172"
+                },
+                {
+                  "key": "lon",
+                  "value": "85.3240"
+                },
+                {
+                  "key": "type",
+                  "value": "restaurant"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Find places near a specific location"
+          },
+          "response": []
+        },
+        {
+          "name": "Directions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://api.baato.io/api/v1/directions?key={{baato_api_key}}&points=27.7172,85.3240|27.7000,85.3300&mode=car",
+              "protocol": "https",
+              "host": ["api", "baato", "io"],
+              "path": ["api", "v1", "directions"],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{baato_api_key}}"
+                },
+                {
+                  "key": "points",
+                  "value": "27.7172,85.3240|27.7000,85.3300"
+                },
+                {
+                  "key": "mode",
+                  "value": "car"
+                }
+              ]
+            },
+            "description": "Get directions between two points"
+          },
+          "response": []
+        },
+        {
+          "name": "Map Styles",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://api.baato.io/api/v1/styles?key={{baato_api_key}}",
+              "protocol": "https",
+              "host": ["api", "baato", "io"],
+              "path": ["api", "v1", "styles"],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{baato_api_key}}"
+                }
+              ]
+            },
+            "description": "Get available map styles"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Mock Transportation Data",
+      "description": "Mock server for transportation data when APIs are unavailable",
+      "item": [
+        {
+          "name": "Mock - Public Transport Routes",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{mock_server_url}}/transport/routes/kathmandu",
+              "host": ["{{mock_server_url}}"],
+              "path": ["transport", "routes", "kathmandu"]
+            },
+            "description": "Get mock public transport routes for Kathmandu"
+          },
+          "response": [
+            {
+              "name": "Mock Transport Routes - Kathmandu",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{mock_server_url}}/transport/routes/kathmandu",
+                  "host": ["{{mock_server_url}}"],
+                  "path": ["transport", "routes", "kathmandu"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"routes\": [\n    {\n      \"id\": \"KTM-001\",\n      \"name\": \"Ratnapark - Kalanki\",\n      \"type\": \"bus\",\n      \"stops\": [\n        {\n          \"name\": \"Ratnapark\",\n          \"coordinates\": [27.7041, 85.3131]\n        },\n        {\n          \"name\": \"Shahid Gate\",\n          \"coordinates\": [27.7018, 85.3089]\n        },\n        {\n          \"name\": \"Tripureshwor\",\n          \"coordinates\": [27.6956, 85.3099]\n        },\n        {\n          \"name\": \"Kalimati\",\n          \"coordinates\": [27.6956, 85.2957]\n        },\n        {\n          \"name\": \"Kalanki\",\n          \"coordinates\": [27.6939, 85.2799]\n        }\n      ],\n      \"schedule\": [\n        {\n          \"departure\": \"06:00\",\n          \"frequency\": \"15min\",\n          \"last_departure\": \"20:00\"\n        }\n      ],\n      \"fare\": {\n        \"min\": 15,\n        \"max\": 25,\n        \"currency\": \"NPR\"\n      }\n    },\n    {\n      \"id\": \"KTM-002\",\n      \"name\": \"Ratnapark - Bouddha\",\n      \"type\": \"microbus\",\n      \"stops\": [\n        {\n          \"name\": \"Ratnapark\",\n          \"coordinates\": [27.7041, 85.3131]\n        },\n        {\n          \"name\": \"Dillibazar\",\n          \"coordinates\": [27.7073, 85.3235]\n        },\n        {\n          \"name\": \"Gyaneshwor\",\n          \"coordinates\": [27.7096, 85.3320]\n        },\n        {\n          \"name\": \"Gopi Krishna\",\n          \"coordinates\": [27.7149, 85.3427]\n        },\n        {\n          \"name\": \"Bouddha\",\n          \"coordinates\": [27.7211, 85.3619]\n        }\n      ],\n      \"schedule\": [\n        {\n          \"departure\": \"05:30\",\n          \"frequency\": \"10min\",\n          \"last_departure\": \"21:00\"\n        }\n      ],\n      \"fare\": {\n        \"min\": 20,\n        \"max\": 30,\n        \"currency\": \"NPR\"\n      }\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Mock - Traffic Updates",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{mock_server_url}}/transport/traffic/kathmandu",
+              "host": ["{{mock_server_url}}"],
+              "path": ["transport", "traffic", "kathmandu"]
+            },
+            "description": "Get mock traffic updates for Kathmandu"
+          },
+          "response": [
+            {
+              "name": "Mock Traffic Updates - Kathmandu",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{mock_server_url}}/transport/traffic/kathmandu",
+                  "host": ["{{mock_server_url}}"],
+                  "path": ["transport", "traffic", "kathmandu"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"traffic_updates\": [\n    {\n      \"id\": \"TRF-001\",\n      \"location\": \"Koteshwor Junction\",\n      \"coordinates\": [27.6771, 85.3497],\n      \"status\": \"heavy\",\n      \"description\": \"Heavy traffic due to road construction\",\n      \"estimated_delay\": \"30-45 minutes\",\n      \"timestamp\": \"2023-04-17T08:30:00Z\",\n      \"alternative_routes\": [\n        \"Take Tinkune to Jadibuti route\",\n        \"Use Ring Road via Balkumari\"\n      ]\n    },\n    {\n      \"id\": \"TRF-002\",\n      \"location\": \"Kalanki Chowk\",\n      \"coordinates\": [27.6939, 85.2799],\n      \"status\": \"moderate\",\n      \"description\": \"Moderate traffic due to morning rush hour\",\n      \"estimated_delay\": \"15-20 minutes\",\n      \"timestamp\": \"2023-04-17T09:15:00Z\",\n      \"alternative_routes\": [\n        \"Use Ring Road via Balkhu\",\n        \"Take Kuleshwor route if heading to Kalimati\"\n      ]\n    },\n    {\n      \"id\": \"TRF-003\",\n      \"location\": \"Chabahil Junction\",\n      \"coordinates\": [27.7193, 85.3464],\n      \"status\": \"light\",\n      \"description\": \"Traffic flowing smoothly\",\n      \"estimated_delay\": \"5 minutes\",\n      \"timestamp\": \"2023-04-17T09:30:00Z\",\n      \"alternative_routes\": []\n    }\n  ],\n  \"last_updated\": \"2023-04-17T09:45:00Z\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baato_api_key",
+      "value": "your_api_key_here",
+      "type": "string"
+    },
+    {
+      "key": "mock_server_url",
+      "value": "https://mock.mygovresponse.com",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,195 @@
+{
+  "info": {
+    "name": "Utility Services",
+    "description": "Collection of utility-related APIs for the MyGov Response Hub",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Mock Electricity Data",
+      "description": "Mock server for electricity data as no direct APIs are available",
+      "item": [
+        {
+          "name": "Mock - Scheduled Power Cuts",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{mock_server_url}}/utility/electricity/powercuts?district=kathmandu&date=2023-04-17",
+              "host": ["{{mock_server_url}}"],
+              "path": ["utility", "electricity", "powercuts"],
+              "query": [
+                {
+                  "key": "district",
+                  "value": "kathmandu"
+                },
+                {
+                  "key": "date",
+                  "value": "2023-04-17"
+                }
+              ]
+            },
+            "description": "Get scheduled power cuts for a specific district and date"
+          },
+          "response": [
+            {
+              "name": "Mock Scheduled Power Cuts - Kathmandu",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{mock_server_url}}/utility/electricity/powercuts?district=kathmandu&date=2023-04-17",
+                  "host": ["{{mock_server_url}}"],
+                  "path": ["utility", "electricity", "powercuts"],
+                  "query": [
+                    {
+                      "key": "district",
+                      "value": "kathmandu"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2023-04-17"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"district\": \"Kathmandu\",\n  \"date\": \"2023-04-17\",\n  \"source\": \"Nepal Electricity Authority (Mock)\",\n  \"scheduled_power_cuts\": [\n    {\n      \"id\": \"PC-KTM-001\",\n      \"area\": \"Balaju, Machhapokhari, Nagarjun\",\n      \"group\": \"A\",\n      \"start_time\": \"10:00\",\n      \"end_time\": \"14:00\",\n      \"reason\": \"Maintenance\",\n      \"status\": \"Confirmed\"\n    },\n    {\n      \"id\": \"PC-KTM-002\",\n      \"area\": \"Baneshwor, Shantinagar, Minbhawan\",\n      \"group\": \"B\",\n      \"start_time\": \"14:00\",\n      \"end_time\": \"18:00\",\n      \"reason\": \"Grid upgrade\",\n      \"status\": \"Confirmed\"\n    },\n    {\n      \"id\": \"PC-KTM-003\",\n      \"area\": \"Kirtipur, Panga, Naikap\",\n      \"group\": \"C\",\n      \"start_time\": \"22:00\",\n      \"end_time\": \"02:00\",\n      \"reason\": \"Emergency maintenance\",\n      \"status\": \"Tentative\"\n    }\n  ],\n  \"notes\": \"Schedule is subject to change. Please check the NEA website for the latest updates.\",\n  \"last_updated\": \"2023-04-17T06:30:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Mock - Service Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{mock_server_url}}/utility/electricity/status?district=kathmandu",
+              "host": ["{{mock_server_url}}"],
+              "path": ["utility", "electricity", "status"],
+              "query": [
+                {
+                  "key": "district",
+                  "value": "kathmandu"
+                }
+              ]
+            },
+            "description": "Get current electricity service status for a specific district"
+          },
+          "response": [
+            {
+              "name": "Mock Service Status - Kathmandu",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{mock_server_url}}/utility/electricity/status?district=kathmandu",
+                  "host": ["{{mock_server_url}}"],
+                  "path": ["utility", "electricity", "status"],
+                  "query": [
+                    {
+                      "key": "district",
+                      "value": "kathmandu"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"district\": \"Kathmandu\",\n  \"source\": \"Nepal Electricity Authority (Mock)\",\n  \"overall_status\": \"Normal\",\n  \"areas\": [\n    {\n      \"name\": \"Balaju\",\n      \"status\": \"Outage\",\n      \"reason\": \"Scheduled maintenance\",\n      \"estimated_restoration\": \"2023-04-17T14:00:00Z\"\n    },\n    {\n      \"name\": \"Baneshwor\",\n      \"status\": \"Normal\",\n      \"reason\": null,\n      \"estimated_restoration\": null\n    },\n    {\n      \"name\": \"Kirtipur\",\n      \"status\": \"Normal\",\n      \"reason\": null,\n      \"estimated_restoration\": null\n    },\n    {\n      \"name\": \"Chabahil\",\n      \"status\": \"Warning\",\n      \"reason\": \"Voltage fluctuation\",\n      \"estimated_restoration\": null\n    },\n    {\n      \"name\": \"Kalanki\",\n      \"status\": \"Normal\",\n      \"reason\": null,\n      \"estimated_restoration\": null\n    }\n  ],\n  \"announcements\": [\n    {\n      \"title\": \"Voltage Stabilization Project\",\n      \"message\": \"NEA is working on a voltage stabilization project in Kathmandu Valley. Some areas may experience brief power fluctuations.\",\n      \"date\": \"2023-04-15\"\n    }\n  ],\n  \"last_updated\": \"2023-04-17T10:15:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Mock - Outage Reports",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{mock_server_url}}/utility/electricity/outages?district=kathmandu&period=week",
+              "host": ["{{mock_server_url}}"],
+              "path": ["utility", "electricity", "outages"],
+              "query": [
+                {
+                  "key": "district",
+                  "value": "kathmandu"
+                },
+                {
+                  "key": "period",
+                  "value": "week"
+                }
+              ]
+            },
+            "description": "Get outage reports for a specific district and time period"
+          },
+          "response": [
+            {
+              "name": "Mock Outage Reports - Kathmandu (Week)",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{mock_server_url}}/utility/electricity/outages?district=kathmandu&period=week",
+                  "host": ["{{mock_server_url}}"],
+                  "path": ["utility", "electricity", "outages"],
+                  "query": [
+                    {
+                      "key": "district",
+                      "value": "kathmandu"
+                    },
+                    {
+                      "key": "period",
+                      "value": "week"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"district\": \"Kathmandu\",\n  \"period\": \"week\",\n  \"start_date\": \"2023-04-10\",\n  \"end_date\": \"2023-04-17\",\n  \"source\": \"Nepal Electricity Authority (Mock)\",\n  \"outages\": [\n    {\n      \"id\": \"OUT-KTM-001\",\n      \"area\": \"Balaju, Machhapokhari\",\n      \"start_time\": \"2023-04-10T10:00:00Z\",\n      \"end_time\": \"2023-04-10T14:00:00Z\",\n      \"duration_hours\": 4,\n      \"type\": \"Scheduled\",\n      \"reason\": \"Maintenance\",\n      \"affected_customers\": 3500\n    },\n    {\n      \"id\": \"OUT-KTM-002\",\n      \"area\": \"Baneshwor, Shantinagar\",\n      \"start_time\": \"2023-04-12T14:00:00Z\",\n      \"end_time\": \"2023-04-12T18:00:00Z\",\n      \"duration_hours\": 4,\n      \"type\": \"Scheduled\",\n      \"reason\": \"Grid upgrade\",\n      \"affected_customers\": 4200\n    },\n    {\n      \"id\": \"OUT-KTM-003\",\n      \"area\": \"Chabahil\",\n      \"start_time\": \"2023-04-15T08:30:00Z\",\n      \"end_time\": \"2023-04-15T11:45:00Z\",\n      \"duration_hours\": 3.25,\n      \"type\": \"Unscheduled\",\n      \"reason\": \"Equipment failure\",\n      \"affected_customers\": 2800\n    },\n    {\n      \"id\": \"OUT-KTM-004\",\n      \"area\": \"Kirtipur\",\n      \"start_time\": \"2023-04-16T22:00:00Z\",\n      \"end_time\": \"2023-04-17T02:00:00Z\",\n      \"duration_hours\": 4,\n      \"type\": \"Scheduled\",\n      \"reason\": \"Emergency maintenance\",\n      \"affected_customers\": 1900\n    }\n  ],\n  \"summary\": {\n    \"total_outages\": 4,\n    \"scheduled_outages\": 3,\n    \"unscheduled_outages\": 1,\n    \"total_duration_hours\": 15.25,\n    \"total_affected_customers\": 12400\n  },\n  \"last_updated\": \"2023-04-17T10:30:00Z\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "mock_server_url",
+      "value": "https://mock.mygovresponse.com",
+      "type": "string"
+    }
+  ]
+}

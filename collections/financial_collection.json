@@ -1,0 +1,230 @@
+{
+  "info": {
+    "name": "Financial Services",
+    "description": "Collection of financial and currency-related APIs for the MyGov Response Hub",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Nepal Rastra Bank Forex",
+      "description": "Currency exchange rates from Nepal's central bank",
+      "item": [
+        {
+          "name": "Mock - Get Latest Exchange Rates",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{mock_server_url}}/finance/forex/latest",
+              "host": ["{{mock_server_url}}"],
+              "path": ["finance", "forex", "latest"]
+            },
+            "description": "Get latest exchange rates from Nepal Rastra Bank (mocked as no direct API is available)"
+          },
+          "response": [
+            {
+              "name": "Mock NRB Forex Data",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{mock_server_url}}/finance/forex/latest",
+                  "host": ["{{mock_server_url}}"],
+                  "path": ["finance", "forex", "latest"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"date\": \"2023-04-17\",\n  \"source\": \"Nepal Rastra Bank\",\n  \"base_currency\": \"NPR\",\n  \"rates\": {\n    \"USD\": {\n      \"buy\": 136.79,\n      \"sell\": 137.39\n    },\n    \"EUR\": {\n      \"buy\": 155.51,\n      \"sell\": 156.19\n    },\n    \"GBP\": {\n      \"buy\": 181.56,\n      \"sell\": 182.36\n    },\n    \"INR\": {\n      \"buy\": 1.60,\n      \"sell\": 1.6015,\n      \"per\": 100\n    },\n    \"AUD\": {\n      \"buy\": 87.20,\n      \"sell\": 87.58\n    },\n    \"CAD\": {\n      \"buy\": 98.30,\n      \"sell\": 98.74\n    },\n    \"SGD\": {\n      \"buy\": 104.13,\n      \"sell\": 104.59\n    },\n    \"JPY\": {\n      \"buy\": 0.959,\n      \"sell\": 0.963,\n      \"per\": 10\n    },\n    \"CNY\": {\n      \"buy\": 18.72,\n      \"sell\": 18.81\n    },\n    \"SAR\": {\n      \"buy\": 36.45,\n      \"sell\": 36.61\n    },\n    \"QAR\": {\n      \"buy\": 37.53,\n      \"sell\": 37.69\n    },\n    \"THB\": {\n      \"buy\": 4.12,\n      \"sell\": 4.13\n    },\n    \"AED\": {\n      \"buy\": 37.24,\n      \"sell\": 37.40\n    },\n    \"MYR\": {\n      \"buy\": 31.01,\n      \"sell\": 31.15\n    },\n    \"KRW\": {\n      \"buy\": 0.0964,\n      \"sell\": 0.0969,\n      \"per\": 100\n    }\n  },\n  \"last_updated\": \"2023-04-17T09:00:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Mock - Get Historical Exchange Rates",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{mock_server_url}}/finance/forex/historical?date=2023-04-10",
+              "host": ["{{mock_server_url}}"],
+              "path": ["finance", "forex", "historical"],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2023-04-10"
+                }
+              ]
+            },
+            "description": "Get historical exchange rates from Nepal Rastra Bank (mocked as no direct API is available)"
+          },
+          "response": [
+            {
+              "name": "Mock NRB Historical Forex Data",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{mock_server_url}}/finance/forex/historical?date=2023-04-10",
+                  "host": ["{{mock_server_url}}"],
+                  "path": ["finance", "forex", "historical"],
+                  "query": [
+                    {
+                      "key": "date",
+                      "value": "2023-04-10"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"date\": \"2023-04-10\",\n  \"source\": \"Nepal Rastra Bank\",\n  \"base_currency\": \"NPR\",\n  \"rates\": {\n    \"USD\": {\n      \"buy\": 135.42,\n      \"sell\": 136.02\n    },\n    \"EUR\": {\n      \"buy\": 154.23,\n      \"sell\": 154.91\n    },\n    \"GBP\": {\n      \"buy\": 180.12,\n      \"sell\": 180.92\n    },\n    \"INR\": {\n      \"buy\": 1.59,\n      \"sell\": 1.5915,\n      \"per\": 100\n    },\n    \"AUD\": {\n      \"buy\": 86.75,\n      \"sell\": 87.13\n    },\n    \"CAD\": {\n      \"buy\": 97.85,\n      \"sell\": 98.29\n    },\n    \"SGD\": {\n      \"buy\": 103.67,\n      \"sell\": 104.13\n    },\n    \"JPY\": {\n      \"buy\": 0.952,\n      \"sell\": 0.956,\n      \"per\": 10\n    },\n    \"CNY\": {\n      \"buy\": 18.65,\n      \"sell\": 18.74\n    },\n    \"SAR\": {\n      \"buy\": 36.28,\n      \"sell\": 36.44\n    },\n    \"QAR\": {\n      \"buy\": 37.35,\n      \"sell\": 37.51\n    },\n    \"THB\": {\n      \"buy\": 4.10,\n      \"sell\": 4.11\n    },\n    \"AED\": {\n      \"buy\": 37.06,\n      \"sell\": 37.22\n    },\n    \"MYR\": {\n      \"buy\": 30.85,\n      \"sell\": 30.99\n    },\n    \"KRW\": {\n      \"buy\": 0.0958,\n      \"sell\": 0.0963,\n      \"per\": 100\n    }\n  },\n  \"last_updated\": \"2023-04-10T09:00:00Z\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Yahoo Finance API",
+      "description": "Financial data from Yahoo Finance",
+      "item": [
+        {
+          "name": "Get Stock Chart",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{yahoo_finance_api_url}}/get_stock_chart?symbol=AAPL&interval=1d&range=1mo",
+              "host": ["{{yahoo_finance_api_url}}"],
+              "path": ["get_stock_chart"],
+              "query": [
+                {
+                  "key": "symbol",
+                  "value": "AAPL"
+                },
+                {
+                  "key": "interval",
+                  "value": "1d"
+                },
+                {
+                  "key": "range",
+                  "value": "1mo"
+                }
+              ]
+            },
+            "description": "Get stock chart data from Yahoo Finance API"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "International Currency APIs (Fallback)",
+      "description": "Fallback currency APIs for when Nepal-specific data is unavailable",
+      "item": [
+        {
+          "name": "XE Currency - Convert NPR to USD",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://api.xe.com/v1/convert_from?from=NPR&to=USD&amount=1000&api_key={{xe_api_key}}",
+              "protocol": "https",
+              "host": ["api", "xe", "com"],
+              "path": ["v1", "convert_from"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "NPR"
+                },
+                {
+                  "key": "to",
+                  "value": "USD"
+                },
+                {
+                  "key": "amount",
+                  "value": "1000"
+                },
+                {
+                  "key": "api_key",
+                  "value": "{{xe_api_key}}"
+                }
+              ]
+            },
+            "description": "Convert NPR to USD using XE Currency API"
+          },
+          "response": []
+        },
+        {
+          "name": "Trading Economics - NPR/USD Rate",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://api.tradingeconomics.com/currency?symbol=NPR:USD&c={{trading_economics_api_key}}",
+              "protocol": "https",
+              "host": ["api", "tradingeconomics", "com"],
+              "path": ["currency"],
+              "query": [
+                {
+                  "key": "symbol",
+                  "value": "NPR:USD"
+                },
+                {
+                  "key": "c",
+                  "value": "{{trading_economics_api_key}}"
+                }
+              ]
+            },
+            "description": "Get NPR/USD exchange rate from Trading Economics API"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "mock_server_url",
+      "value": "https://mock.mygovresponse.com",
+      "type": "string"
+    },
+    {
+      "key": "yahoo_finance_api_url",
+      "value": "https://api.example.com/yahoofinance",
+      "type": "string"
+    },
+    {
+      "key": "xe_api_key",
+      "value": "your_api_key_here",
+      "type": "string"
+    },
+    {
+      "key": "trading_economics_api_key",
+      "value": "your_api_key_here",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,247 @@
+{
+  "info": {
+    "name": "Weather Services Tests",
+    "description": "Tests for validating weather API responses in the MyGov Response Hub",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Nepal Weather API - Get All Locations",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Test for successful response",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Test for response time",
+              "pm.test(\"Response time is acceptable\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Test for JSON content type",
+              "pm.test(\"Content-Type is JSON\", function () {",
+              "    pm.response.to.have.header(\"Content-Type\");",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "// Test for valid JSON response",
+              "pm.test(\"Response is valid JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an('object');",
+              "});",
+              "",
+              "// Test for status field in response",
+              "pm.test(\"Response has status field\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('status');",
+              "    pm.expect(jsonData.status).to.equal('true');",
+              "});",
+              "",
+              "// Test for at least one location in response",
+              "pm.test(\"Response contains at least one location\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    // Check if there's at least one numeric key (location index)",
+              "    const hasNumericKey = Object.keys(jsonData).some(key => !isNaN(key));",
+              "    pm.expect(hasNumericKey).to.be.true;",
+              "});",
+              "",
+              "// Test for Kathmandu in response",
+              "pm.test(\"Response contains Kathmandu data\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    // Find Kathmandu in the response",
+              "    const kathmandu = Object.values(jsonData).find(item => ",
+              "        item && typeof item === 'object' && item.place === 'Kathmandu'",
+              "    );",
+              "    pm.expect(kathmandu).to.not.be.undefined;",
+              "    pm.expect(kathmandu).to.have.property('max');",
+              "    pm.expect(kathmandu).to.have.property('min');",
+              "    pm.expect(kathmandu).to.have.property('rain');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "https://nepal-weather-api.herokuapp.com/api/?place=all",
+          "protocol": "https",
+          "host": ["nepal-weather-api", "herokuapp", "com"],
+          "path": ["api", ""],
+          "query": [
+            {
+              "key": "place",
+              "value": "all"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Nepal Weather API - Get Specific Location",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Test for successful response",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Test for response time",
+              "pm.test(\"Response time is acceptable\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Test for JSON content type",
+              "pm.test(\"Content-Type is JSON\", function () {",
+              "    pm.response.to.have.header(\"Content-Type\");",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "// Test for valid JSON response",
+              "pm.test(\"Response is valid JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an('object');",
+              "});",
+              "",
+              "// Test for status field in response",
+              "pm.test(\"Response has status field\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('status');",
+              "    pm.expect(jsonData.status).to.equal('true');",
+              "});",
+              "",
+              "// Test for place field in response",
+              "pm.test(\"Response has place field\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('place');",
+              "    pm.expect(jsonData.place).to.equal('Kathmandu');",
+              "});",
+              "",
+              "// Test for temperature and rain data",
+              "pm.test(\"Response has temperature and rain data\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('max');",
+              "    pm.expect(jsonData).to.have.property('min');",
+              "    pm.expect(jsonData).to.have.property('rain');",
+              "    ",
+              "    // Check temperature format (should end with ' C')",
+              "    pm.expect(jsonData.max).to.match(/ C$/);",
+              "    pm.expect(jsonData.min).to.match(/ C$/);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "https://nepal-weather-api.herokuapp.com/api/?place=kathmandu",
+          "protocol": "https",
+          "host": ["nepal-weather-api", "herokuapp", "com"],
+          "path": ["api", ""],
+          "query": [
+            {
+              "key": "place",
+              "value": "kathmandu"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Mock Weather - Get All Locations",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Test for successful response",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Test for JSON content type",
+              "pm.test(\"Content-Type is JSON\", function () {",
+              "    pm.response.to.have.header(\"Content-Type\");",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "// Test for valid JSON response",
+              "pm.test(\"Response is valid JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an('object');",
+              "});",
+              "",
+              "// Test for status field in response",
+              "pm.test(\"Response has status field\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('status');",
+              "    pm.expect(jsonData.status).to.equal('true');",
+              "});",
+              "",
+              "// Test for at least one location in response",
+              "pm.test(\"Response contains at least one location\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    // Check if there's at least one numeric key (location index)",
+              "    const hasNumericKey = Object.keys(jsonData).some(key => !isNaN(key));",
+              "    pm.expect(hasNumericKey).to.be.true;",
+              "});",
+              "",
+              "// Test for schema validation",
+              "pm.test(\"Response schema is valid\", function () {",
+              "    const schema = {",
+              "        \"type\": \"object\",",
+              "        \"required\": [\"status\"],",
+              "        \"properties\": {",
+              "            \"status\": { \"type\": \"string\" },",
+              "            \"1\": {",
+              "                \"type\": \"object\",",
+              "                \"properties\": {",
+              "                    \"status\": { \"type\": \"string\" },",
+              "                    \"place\": { \"type\": \"string\" },",
+              "                    \"max\": { \"type\": \"string\" },",
+              "                    \"min\": { \"type\": \"string\" },",
+              "                    \"rain\": { \"type\": \"string\" }",
+              "                },",
+              "                \"required\": [\"status\", \"place\", \"max\", \"min\", \"rain\"]",
+              "            }",
+              "        }",
+              "    };",
+              "    ",
+              "    pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{mock_server_url}}/weather/all",
+          "host": ["{{mock_server_url}}"],
+          "path": ["weather", "all"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "mock_server_url",
+      "value": "https://mock.mygovresponse.com",
+      "type": "string"
+    }
+  ]
+}
